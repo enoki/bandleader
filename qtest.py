@@ -913,6 +913,11 @@ class FlowLayout(QLayout):
 
         return y + lineHeight - rect.y()
 
+def set_background(widget, color):
+    palette = widget.palette()
+    palette.setColor(QPalette.Window, color)
+    widget.setPalette(palette)
+
 class ScoreWindow(QWidget):
     def __init__(self, score, *args):
         QWidget.__init__(self, *args)
@@ -923,6 +928,7 @@ class ScoreWindow(QWidget):
     def create_controls(self, score):
         inner_widget = QWidget(self)
         self.inner_widget = inner_widget
+        set_background(inner_widget, QColor('white'))
 
         bar_layout = FlowLayout(inner_widget)
         bar_layout.setAlignment(Qt.AlignHCenter)
@@ -953,13 +959,7 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self, *args)
         central = ScoreTabs(score)
         self.setCentralWidget(central)
-        self.set_background()
         self.resize(int((xtile_size*16+2)*2.5), self.height())
-
-    def set_background(self):
-        palette = self.palette()
-        palette.setColor(QPalette.Window, QColor('white'))
-        self.setPalette(palette)
 
 class ChordCursor(object):
     def __init__(self, parent):
