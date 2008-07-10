@@ -57,9 +57,7 @@ class FlowLayout(QLayout):
         x = rect.x()
         y = rect.y()
         lineHeight = 0
-        spacing = self.spacing()
-        if spacing < 0:
-            spacing = 0
+        spacing = self.spacing() - 8  # XXX fudge
 
         right_x = x
 
