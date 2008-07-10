@@ -1,12 +1,13 @@
 from PyQt4.QtGui import QApplication
-from music import ScoreBar
+from music import Score
 from mainwindow import MainWindow
 import sys
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
 
-    score = [ScoreBar(4, 4, 4) for x in xrange(32)]
+    score = Score()
+    score.add_bars(4, 4, 4, count=16)
 
     window = MainWindow(score)
     window.show()

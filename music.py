@@ -36,3 +36,10 @@ def each_score_bar_coord(score_bar):
         else:
             i += 1
 
+class Score(list):
+    def __init__(self, *args, **kwargs):
+        list.__init__(self, *args, **kwargs)
+
+    def add_bars(self, beats_per_bar, bar_value, divisions_per_beat, count=1):
+        self.extend(ScoreBar(beats_per_bar, bar_value, divisions_per_beat)
+                        for x in xrange(count))

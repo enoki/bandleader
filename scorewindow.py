@@ -17,11 +17,11 @@ class ScoreWindow(QWidget):
 
     def create_controls(self, score):
         inner_widget = QWidget(self)
-        self.inner_widget = inner_widget
         set_background(inner_widget, QColor('white'))
 
         bar_layout = FlowLayout(inner_widget)
         bar_layout.setAlignment(Qt.AlignHCenter)
+        self.bar_layout = bar_layout
 
         for i, bar in enumerate(score):
             scene = BarScene(bar, i)
