@@ -12,9 +12,9 @@ class ChordCursor(object):
         self.zoomlevel = 2
 
     def move(self, move_function):
-        self.AboutToBeMoved()
+        notify.send(self.AboutToBeMoved, self.bar_index, self.beat_index)
         move_function()
-        self.Moved()
+        notify.send(self.Moved, self.bar_index, self.beat_index)
 
     def move_right(self):
         self.move(self.do_move_right)

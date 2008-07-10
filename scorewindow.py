@@ -44,8 +44,8 @@ class ScoreWindow(QWidget):
     def create_cursors(self, score):
         self.chord_cursor = ChordCursor(score, 2)
 
-        def move_cursor():
-            self.bars[self.chord_cursor.bar_index].focus_chord_label(self.chord_cursor.beat_index)
+        def move_cursor(bar_index, beat_index):
+            self.bars[bar_index].focus_chord_label(beat_index)
 
         notify.connect(ChordCursor.Moved, move_cursor)
 
