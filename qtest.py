@@ -912,20 +912,13 @@ class ScoreWindow(QWidget):
 
         bar_layout = FlowLayout(inner_widget)
 
-        col_count = 2
-        row_count = int(math.ceil(len(score) // col_count))
-
-        for row in xrange(row_count):
-            for col in xrange(col_count):
-                i = row * col_count + col
-                if i >= len(score):
-                    break
-                scene = BarScene(score[i], i)
-                b = BarWindow()  # TODO cursors
-                b.setScene(scene)
-                b.setFixedWidth(xtile_size * 16 + 2)
-                bar_layout.addWidget(b) #, row, col)
-                self.bars.append(scene)
+        for i, bar in enumerate(score):
+            scene = BarScene(bar, i)
+            b = BarWindow()
+            b.setScene(scene)
+            b.setFixedWidth(xtile_size * 16 + 2)
+            bar_layout.addWidget(b)
+            self.bars.append(scene)
 
         scroller = QScrollArea()
         scroller.setWidget(inner_widget)
