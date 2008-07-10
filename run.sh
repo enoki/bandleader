@@ -1,2 +1,2 @@
 #!/bin/sh
-pythonw bandleader.py
+python bandleader.py
