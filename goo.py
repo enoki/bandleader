@@ -3,11 +3,11 @@ from music import each_score_bar_coord
 def note_to_goo(score_bar, *args):
     if score_bar.beats_per_bar == 4 and score_bar.divisions_per_beat == 4:
         return note_to_goo_4_4(score_bar, *args)
-    elif beats_per_bar == 3 and divisions_per_beat == 4:
-        return note_to_goo_3_4(note, duration, bar_index)
+    elif score_bar.beats_per_bar == 3 and score_bar.divisions_per_beat == 4:
+        return note_to_goo_3_4(score_bar, *args)
     return []
 
-def note_to_goo_3_4(note, duration, bar_index):
+def note_to_goo_3_4(score_bar, note, duration, bar_index):
     goo = []
 
     beat_offset = bar_index % 4
@@ -59,7 +59,7 @@ def note_to_goo_3_4(note, duration, bar_index):
 
     if duration > 0:
         goo.append(('~', '0'))
-        goo.extend(note_to_goo_3_4(note, duration, bar_index))
+        goo.extend(note_to_goo_3_4(score_bar, note, duration, bar_index))
 
     return goo
 
