@@ -1,4 +1,4 @@
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QApplication
 from music import ScoreBar
 from mainwindow import MainWindow
 import sys

@@ -1,4 +1,4 @@
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QTabWidget, QMainWindow
 from scorewindow import ScoreWindow
 
 class ScoreTabs(QTabWidget):
