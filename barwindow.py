@@ -1,4 +1,6 @@
 from PyQt4.QtCore import QRectF, QPointF, QSize, QPoint, QRect, Qt
+from PyQt4.QtCore import SIGNAL, QObject
+
 from PyQt4.QtGui import *
 import louie as notify
 from music import ScoreBar, each_score_bar_coord
@@ -248,7 +250,14 @@ class BarScene(QGraphicsScene):
         y = chordlabel_offsety
 
         label = ChordLabel(x, y, index, self.score_bar.chords[index])
+
+        def commit_chord():
+            self.score_bar.chords[index] = str(label.toPlainText())
+
         self.add_item(label, tags=('static', 'chordlabel'))
+        QObject.connect(label.document(), SIGNAL('contentsChanged()'),
+                        commit_chord)
+
         self.chord_labels[index] = label
 
     def create_lyric_label(self):
