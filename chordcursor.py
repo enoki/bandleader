@@ -1,25 +1,20 @@
+import louie as notify
+
 class ChordCursor(object):
-    def __init__(self, parent):
-        self.is_bar_visible = parent.is_bar_visible
-        self.bars_per_row = parent.col_count
-        self.bar_count = parent.bar_count
-        self.bar_window_at = parent.bar_window
+    AboutToBeMoved = notify.Signal()
+    Moved = notify.Signal()
+
+    def __init__(self, score, bars_per_row):
+        self.score = score
+        self.bars_per_row = bars_per_row
         self.bar_index = 0
         self.beat_index = 0
-        self.editing_chord = False
         self.zoomlevel = 2
 
     def move(self, move_function):
-        self.start_move()
+        self.AboutToBeMoved()
         move_function()
-        self.end_move()
-
-    def start_move(self):
-        self.commit_chord()
-        self.bar_window().erase_chord_cursor()
-
-    def end_move(self):
-        self.bar_window().draw_chord_cursor(self.beat_index)
+        self.Moved()
 
     def move_right(self):
         self.move(self.do_move_right)
@@ -37,7 +32,7 @@ class ChordCursor(object):
         self.move(lambda: self.do_move_to(bar_index, beat_index))
 
     def do_move_right(self):
-        beat_index = self.beat_index + 1 * self.zoomlevel # TODO
+        beat_index = self.beat_index + self.zoomfactor()
         if beat_index >= beats_per_bar:
             if self.bar_index < self.bar_count()-1:
                 self.bar_index += 1
@@ -46,11 +41,12 @@ class ChordCursor(object):
             self.beat_index = beat_index
 
     def do_move_left(self):
-        beat_index = self.beat_index - 1 * self.zoomlevel # TODO
+        beat_index = self.beat_index - self.zoomfactor()
         if beat_index < 0:
             if self.bar_index > 0:
                 self.bar_index -= 1
-                self.beat_index = beats_per_bar - 1*self.zoomlevel # TODO
+                beats_per_bar = self.current_bar().beats_per_bar
+                self.beat_index = beats_per_bar - self.zoomfactor()
         else:
             self.beat_index = beat_index
 
@@ -59,6 +55,8 @@ class ChordCursor(object):
         if row < self.last_row():
             row += 1
             self.bar_index = self.bar_number_of(row, column)
+            if self.bar_index > self.bar_count()-1:
+                self.bar_index = self.bar_count()-1
 
     def do_move_up(self):
         row, column = self.row_column()
@@ -70,6 +68,33 @@ class ChordCursor(object):
         self.bar_index = bar_index
         self.beat_index = beat_index
 
+    def zoomfactor(self):
+        beats_per_bar = self.current_bar().beats_per_bar
+        if beats_per_bar == 4:
+            return self.zoomlevel
+        elif beats_per_bar == 3 and self.zoomlevel == 4:
+            return 3
+        else:
+            return 1
+
+    def zoom_in(self):
+        if self.zoomlevel == 1:
+            self.zoomlevel = 2
+        else:
+            self.zoomlevel = 1
+
+    def zoom_in_lots(self):
+        if self.zoomlevel == 4:
+            self.zoomlevel = 2
+        else:
+            self.zoomlevel = 4
+
+    def bar_count(self):
+        return len(self.score)
+
+    def current_bar(self):
+        return self.score[self.bar_index]
+
     def row_column(self):
         return divmod(self.bar_index, self.bars_per_row)
 
@@ -78,41 +103,3 @@ class ChordCursor(object):
 
     def bar_number_of(self, row, col):
         return row * self.bars_per_row + col
-
-    def commit_chord(self):
-        if self.editing_chord:
-            self.bar_window().commit_chord(self.beat_index)
-            self.editing_chord = False
-
-    def backspace(self):
-        if self.editing_chord:
-            self.bar_window().backspace_focused_text()
-
-    def delete(self):
-        if not self.editing_chord:
-            self.bar_window().delete_chord()
-
-    def append(self, char):
-        self.editing_chord = True
-        self.bar_window().append_to_focused_text(char)
-
-    def bar_window(self):
-        return self.bar_window_at(self.bar_index)
-
-    # TODO
-    def zoom_in(self):
-        if self.zoomlevel == 1:
-            self.zoomlevel = 2
-        else:
-            self.zoomlevel = 1
-
-    # TODO
-    def zoom_in_lots(self):
-        if self.zoomlevel == 4:
-            self.zoomlevel = 2
-        else:
-            self.zoomlevel = 4
-
-    def setup(self):
-        self.bar_window().after(500, self.end_move)
-
