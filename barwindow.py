@@ -146,6 +146,7 @@ class BarScene(QGraphicsScene):
         self.bar_index = bar_index
         self.items_by_tag = {}
         self.items_by_id = {}
+        self.chord_labels = {}
         create_images()
         self.create_initial_scene()
 
@@ -240,9 +241,9 @@ class BarScene(QGraphicsScene):
         x = (x + x2) // 2
         y = chordlabel_offsety
 
-        chords = self.score_bar.chords
-        self.add_item(ChordLabel(x, y, index, chords[index]),
-                      tags=('static', 'chordlabel'))
+        label = ChordLabel(x, y, index, self.score_bar.chords[index])
+        self.add_item(label, tags=('static', 'chordlabel'))
+        self.chord_labels[index] = label
 
     def create_lyric_label(self):
         x, y, a, a = bbox_of(0, bar_row_count+1)
