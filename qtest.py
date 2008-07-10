@@ -883,9 +883,12 @@ class FlowLayout(QLayout):
         if spacing < 0:
             spacing = 0
 
+        right_x = x
+
         for item in self.items:
             nextX = x + item.sizeHint().width() + spacing
             if (nextX - spacing > rect.right()) and lineHeight > 0:
+                right_x = max(x, right_x)
                 x = rect.x()
                 y = y + lineHeight + spacing
                 nextX = x + item.sizeHint().width() + spacing
@@ -896,6 +899,17 @@ class FlowLayout(QLayout):
 
             x = nextX
             lineHeight = max(lineHeight, item.sizeHint().height())
+
+        if not testOnly and self.alignment() == Qt.AlignHCenter:
+            inner_width = (right_x - rect.x())
+            outer_width = rect.width()
+            offset_x = (outer_width - inner_width) / 2
+
+            if offset_x >= 0:
+                for item in self.items:
+                    geometry = item.geometry()
+                    point = QPoint(geometry.x() + offset_x, geometry.y())
+                    item.setGeometry(QRect(point, geometry.size()))
 
         return y + lineHeight - rect.y()
 
@@ -911,6 +925,7 @@ class ScoreWindow(QWidget):
         self.inner_widget = inner_widget
 
         bar_layout = FlowLayout(inner_widget)
+        bar_layout.setAlignment(Qt.AlignHCenter)
 
         for i, bar in enumerate(score):
             scene = BarScene(bar, i)
