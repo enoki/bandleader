@@ -140,6 +140,13 @@ class ChordLabel(QGraphicsTextItem):
         self.select_all()
 
     def keyPressEvent(self, event):
+        key = event.key()
+        if (key == Qt.Key_Left or
+            key == Qt.Key_Right or
+            key == Qt.Key_Up or
+            key == Qt.Key_Down):
+            event.ignore()
+            return
         QGraphicsTextItem.keyPressEvent(self, event)
 
     def select_all(self):
