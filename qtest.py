@@ -927,7 +927,6 @@ class ScoreWindow(QWidget):
 
         layout = QVBoxLayout(self)
         layout.addWidget(scroller)
-        layout.setAlignment(Qt.AlignCenter)
 
 class ScoreTabs(QTabWidget):
     def __init__(self, score, *args):
@@ -940,6 +939,7 @@ class MainWindow(QMainWindow):
         central = ScoreTabs(score)
         self.setCentralWidget(central)
         self.set_background()
+        self.resize(int((xtile_size*16+2)*2.5), self.height())
 
     def set_background(self):
         palette = self.palette()
