@@ -135,9 +135,15 @@ class ChordLabel(QGraphicsTextItem):
 
     def focusInEvent(self, event):
         QGraphicsTextItem.focusInEvent(self, event)
+        self.select_all()
 
     def keyPressEvent(self, event):
         QGraphicsTextItem.keyPressEvent(self, event)
+
+    def select_all(self):
+        cursor = self.textCursor()
+        cursor.select(QTextCursor.Document)
+        self.setTextCursor(cursor)
 
 class BarScene(QGraphicsScene):
     def __init__(self, score_bar, bar_index):
@@ -620,6 +626,11 @@ class BarScene(QGraphicsScene):
         path.arcTo(x, y, abs(x2-x), abs(y2-y), 0, extent)
         item = QGraphicsPathItem(path)
         self.add_item(item, tags=('note', 'noteimage'))
+
+    def focus_chord_label(self, index):
+        if index in self.chord_labels:
+            label = self.chord_labels[index]
+            label.setFocus()
 
 class BarWindow(QGraphicsView):
     def __init__(self, *args):
