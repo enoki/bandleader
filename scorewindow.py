@@ -74,5 +74,4 @@ class ScoreWindow(QWidget):
         elif key == Qt.Key_J or key == Qt.Key_Down:
             self.chord_cursor.move_down()
         else:
-            print 'key %d' % key
             QWidget.keyPressEvent(self, event)
