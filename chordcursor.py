@@ -1,9 +1,6 @@
-import louie as notify
+import notify
 
 class ChordCursor(object):
-    AboutToBeMoved = notify.Signal()
-    Moved = notify.Signal()
-
     def __init__(self, score, row_column_of, bar_index_of):
         self.score = score
         self.row_column_of = row_column_of
@@ -11,11 +8,13 @@ class ChordCursor(object):
         self.bar_index = 0
         self.beat_index = 0
         self.zoomlevel = 2
+        self.about_to_be_moved = notify.Signal()
+        self.moved = notify.Signal()
 
     def move(self, move_function):
-        notify.send(self.AboutToBeMoved, self, self.bar_index, self.beat_index)
+        self.about_to_be_moved(self.bar_index, self.beat_index)
         move_function()
-        notify.send(self.Moved, self, self.bar_index, self.beat_index)
+        self.moved(self.bar_index, self.beat_index)
 
     def move_right(self):
         self.move(self.do_move_right)

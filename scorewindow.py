@@ -1,6 +1,5 @@
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import *
-import louie as notify
 from barwindow import BarWindow, BarScene
 from flowlayout import FlowLayout
 from chordcursor import ChordCursor
@@ -56,10 +55,8 @@ class ScoreWindow(QWidget):
         self.keymode.switch_mode('chord')
 
     def connect_chord_cursor(self):
-        notify.connect(self.unmove_chord_cursor, ChordCursor.AboutToBeMoved,
-                       self.chord_cursor)
-        notify.connect(self.move_chord_cursor, ChordCursor.Moved,
-                       self.chord_cursor)
+        self.chord_cursor.about_to_be_moved.connect(self.unmove_chord_cursor)
+        self.chord_cursor.moved.connect(self.move_chord_cursor)
 
     def move_chord_cursor(self, bar_index, beat_index):
         self.bars[bar_index].focus_chord_label(beat_index)

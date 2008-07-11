@@ -2,7 +2,7 @@ from PyQt4.QtCore import QRectF, QPointF, QSize, QPoint, QRect, Qt
 from PyQt4.QtCore import SIGNAL, QObject
 
 from PyQt4.QtGui import *
-import louie as notify
+import notify
 from music import ScoreBar, each_score_bar_coord
 from goo import *
 
@@ -107,7 +107,7 @@ class NoteSlot(QGraphicsRectItem):
         self.on_mouse_press = notify.Signal()
 
     def mousePressEvent(self, event):
-        notify.send(self.on_mouse_press, self, event, self.col, self.row)
+        self.on_mouse_press(event, self.col, self.row)
 
     def paint(self, painter, option, widget=None):
         pass
@@ -126,7 +126,7 @@ class NoteShadow(QGraphicsRectItem):
         self.setBrush(QBrush(color))
 
     def mousePressEvent(self, event):
-        notify.send(self.on_mouse_press, self, event, self.col, self.row)
+        self.on_mouse_press(event, self.col, self.row)
 
 class ChordLabel(QGraphicsTextItem):
     def __init__(self, x, y, beat_index, *args):
@@ -173,7 +173,7 @@ class BarScene(QGraphicsScene):
 
     def create_note_slot(self, col, row):
         note_slot = NoteSlot(bbox_rect_of(col, row), col, row)
-        notify.connect(self.on_note_slot_clicked, note_slot.on_mouse_press)
+        note_slot.on_mouse_press.connect(self.on_note_slot_clicked)
         self.add_item(note_slot, tags=('static', 'noteslot'))
 
     def on_note_slot_clicked(self, event, col, row):
@@ -425,7 +425,7 @@ class BarScene(QGraphicsScene):
         rect = QRectF(QPointF(x, y), QPointF(x2, y2))
         item = self.add_item(NoteShadow(rect, col, row, fill),
                              tags=('note', 'noteshadow'))
-        notify.connect(self.on_note_shadow_clicked, item.on_mouse_press)
+        item.on_mouse_press.connect(self.on_note_shadow_clicked)
 
     def on_note_shadow_clicked(self, event, col, row):
         if event.modifiers() & Qt.ControlModifier:

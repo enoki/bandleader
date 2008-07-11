@@ -1,6 +1,10 @@
 from PyQt4.QtCore import Qt
+import notify
 
 class ChordMode(object):
+    BeginInserting = notify.Signal()
+    EndInserting = notify.Signal()
+
     def __init__(self, cursor):
         self.cursor = cursor
 
