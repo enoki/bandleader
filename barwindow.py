@@ -132,7 +132,7 @@ class ChordLabel(QGraphicsTextItem):
     def __init__(self, x, y, beat_index, *args):
         QGraphicsTextItem.__init__(self, *args)
         self.setPos(x, y)
-        self.setTextInteractionFlags(Qt.NoTextInteraction)
+        self.setTextInteractionFlags(Qt.TextEditable)
         self.beat_index = beat_index
 
     def select_all(self):
@@ -144,6 +144,17 @@ class ChordLabel(QGraphicsTextItem):
         cursor = self.textCursor()
         cursor.clearSelection()
         self.setTextCursor(cursor)
+
+    def append(self, text):
+        cursor = self.textCursor()
+        cursor.insertText(text)
+        self.setTextCursor(cursor)
+
+    def keyPressEvent(self, event):
+        event.ignore()
+
+    def keyReleaseEvent(self, event):
+        event.ignore()
 
 class BarScene(QGraphicsScene):
     def __init__(self, score_bar, bar_index):
@@ -637,12 +648,18 @@ class BarScene(QGraphicsScene):
     def focus_chord_label(self, index):
         if index in self.chord_labels:
             label = self.chord_labels[index]
+            label.setFocus()
             label.select_all()
 
     def unfocus_chord_label(self, index):
         if index in self.chord_labels:
             label = self.chord_labels[index]
             label.select_none()
+
+    def append_to_chord_label(self, index, text):
+        if index in self.chord_labels:
+            label = self.chord_labels[index]
+            label.append(text)
 
 class BarWindow(QGraphicsView):
     def __init__(self, *args):

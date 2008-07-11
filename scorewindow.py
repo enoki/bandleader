@@ -57,6 +57,7 @@ class ScoreWindow(QWidget):
     def connect_chord_cursor(self):
         self.chord_cursor.about_to_be_moved.connect(self.unmove_chord_cursor)
         self.chord_cursor.moved.connect(self.move_chord_cursor)
+        self.chord_cursor.text_appended.connect(self.append_chord_cursor_text)
 
     def move_chord_cursor(self, bar_index, beat_index):
         self.bars[bar_index].focus_chord_label(beat_index)
@@ -64,6 +65,9 @@ class ScoreWindow(QWidget):
 
     def unmove_chord_cursor(self, bar_index, beat_index):
         self.bars[bar_index].unfocus_chord_label(beat_index)
+
+    def append_chord_cursor_text(self, bar_index, beat_index, text):
+        self.bars[bar_index].append_to_chord_label(beat_index, text)
 
     def keyPressEvent(self, event):
         handled = self.keymode.keyPressEvent(event)

@@ -10,14 +10,17 @@ class ChordMode(object):
 
     def keyPressEvent(self, event):
         key = event.key()
+        cursor = self.cursor
         if key == Qt.Key_H or key == Qt.Key_Left:
-            self.cursor.move_left()
+            cursor.move_left()
         elif key == Qt.Key_L or key == Qt.Key_Right or key == Qt.Key_Return:
-            self.cursor.move_right()
+            cursor.move_right()
         elif key == Qt.Key_K or key == Qt.Key_Up:
-            self.cursor.move_up()
+            cursor.move_up()
         elif key == Qt.Key_J or key == Qt.Key_Down:
-            self.cursor.move_down()
+            cursor.move_down()
+        elif key == Qt.Key_C:
+            cursor.append_text('C')
         else:
             return False
         return True
