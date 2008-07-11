@@ -137,6 +137,7 @@ class ChordMode(object):
     def keyPressEvent(self, event):
         key = event.key()
         key_modifiers = event.modifiers()
+        shift_down = key_modifiers & Qt.SHIFT
         cursor = self.cursor
         if key == Qt.Key_H or key == Qt.Key_Left:
             cursor.move_left()
@@ -146,6 +147,10 @@ class ChordMode(object):
             cursor.move_up()
         elif key == Qt.Key_J or key == Qt.Key_Down:
             cursor.move_down()
+        elif key == Qt.Key_Z and shift_down:
+            cursor.zoom_in_lots()
+        elif key == Qt.Key_Z:
+            cursor.zoom_in()
         else:
             return handle_chord_input(cursor, key, key_modifiers)
         return True
