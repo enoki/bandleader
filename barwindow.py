@@ -228,8 +228,9 @@ class BarScene(QGraphicsScene):
 
     def create_bar_number(self):
         x, y = offsetx, barnum_offsety
-        self.add_simple_text(x, y, str(self.bar_index+1),
-                             tags=('static', 'barnum'))
+        self.bar_number = self.add_simple_text(x, y,
+                                               str(self.bar_index+1),
+                                               tags=('static', 'barnum'))
 
     def create_microbeat_lines(self):
         bar_divisions = self.score_bar.bar_divisions
@@ -709,6 +710,15 @@ class BarScene(QGraphicsScene):
         if index in self.chord_labels:
             label = self.chord_labels[index]
             label.delete_text()
+
+    def change_chord_label(self, index, text):
+        if index in self.chord_labels:
+            label = self.chord_labels[index]
+            label.setPlainText(text)
+
+    def set_bar_index(self, bar_index):
+        self.bar_index = bar_index
+        self.bar_number.setText(str(self.bar_index+1))
 
 class BarWindow(QGraphicsView):
     def __init__(self, *args):

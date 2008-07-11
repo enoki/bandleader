@@ -161,6 +161,8 @@ class ChordMode(object):
             cursor.zoom_in_lots()
         elif key == Qt.Key_Z:
             cursor.zoom_in()
+        elif key == Qt.Key_Delete and control_down:
+            cursor.delete_bar()
         else:
             return handle_chord_input(cursor, key, key_modifiers)
         return True

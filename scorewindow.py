@@ -66,6 +66,9 @@ class ScoreWindow(QWidget):
         cursor.request_append.connect(self.append_chord_cursor_text)
         cursor.request_backspace.connect(self.backspace_chord_cursor_text)
         cursor.request_delete.connect(self.delete_chord_cursor_text)
+        cursor.request_change_text.connect(self.change_chord_cursor_text)
+        cursor.about_to_delete_bar.connect(self.prepare_delete_bar)
+        cursor.bar_deleted.connect(self.delete_bar)
 
     def move_chord_cursor(self, bar_index, beat_index):
         self.bars[bar_index].focus_chord_label(beat_index)
@@ -84,8 +87,24 @@ class ScoreWindow(QWidget):
     def delete_chord_cursor_text(self, bar_index, beat_index):
         self.bars[bar_index].delete_in_chord_label(beat_index)
 
+    def change_chord_cursor_text(self, bar_index, beat_index, text):
+        self.bars[bar_index].change_chord_label(beat_index, text)
+
     def chord_label_focused_by_mouse(self, bar_index, beat_index):
         self.chord_cursor.move_to(bar_index, beat_index)
+
+    def prepare_delete_bar(self, bar_index):
+        pass
+
+    def delete_bar(self, bar_index):
+        widget = self.bar_windows[bar_index]
+        self.bar_layout.removeWidget(widget)
+        widget.deleteLater()
+        del self.bars[bar_index]
+        del self.bar_windows[bar_index]
+
+        for i in xrange(bar_index, len(self.score)):
+            self.bars[i].set_bar_index(i)
 
     def keyPressEvent(self, event):
         handled = self.keymode.keyPressEvent(event)

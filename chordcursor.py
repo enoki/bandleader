@@ -10,9 +10,12 @@ class ChordCursor(object):
         self.zoomlevel = 2
         self.about_to_be_moved = notify.Signal()
         self.moved = notify.Signal()
+        self.about_to_delete_bar = notify.Signal()
+        self.bar_deleted = notify.Signal()
         self.request_append = notify.Signal()
         self.request_backspace = notify.Signal()
         self.request_delete = notify.Signal()
+        self.request_change_text = notify.Signal()
 
     def move(self, move_function):
         self.about_to_be_moved(self.bar_index, self.beat_index)
@@ -161,3 +164,21 @@ class ChordCursor(object):
 
     def delete_text(self):
         self.request_delete(self.bar_index, self.beat_index)
+
+    def change_text(self, text):
+        self.request_change_text(self.bar_index, self.beat_index, text)
+
+    def delete_bar(self):
+        if len(self.score) > 1:
+            self.about_to_delete_bar(self.bar_index)
+            del self.score[self.bar_index]
+            self.bar_deleted(self.bar_index)
+
+            if self.bar_index == len(self.score):
+                self.bar_index -= 1
+                self.beat_index = self.score[self.bar_index].beats_per_bar-1
+            self.moved(self.bar_index, self.beat_index)
+
+    def reset_bar(self):
+        for beat_index in xrange(len(self.score[self.bar_index].chords)):
+            self.request_change_text(self.bar_index, beat_index, '/')
