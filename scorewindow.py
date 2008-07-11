@@ -72,6 +72,7 @@ class ScoreWindow(QWidget):
         self.scroller.ensureWidgetVisible(self.bar_windows[bar_index])
 
     def unmove_chord_cursor(self, bar_index, beat_index):
+        self.chord_cursor.commit()
         self.bars[bar_index].unfocus_chord_label(beat_index)
 
     def append_chord_cursor_text(self, bar_index, beat_index, text):

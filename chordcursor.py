@@ -111,6 +111,10 @@ class ChordCursor(object):
         row, column = self.row_column_of(self.bar_count()-1)
         return row
 
+    def commit(self):
+        if len(self.current_text()) == 0:
+            self.append_text('/')
+
     def current_text(self):
         return self.score[self.bar_index].chords[self.beat_index]
 

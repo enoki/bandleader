@@ -159,6 +159,9 @@ class ChordMode(object):
         if hasattr(mode, 'cursor'):
             self.cursor.bar_index = mode.cursor.bar_index
 
+    def commit(self):
+        self.cursor.commit()
+
 class KeyMode(object):
     def __init__(self, chord_cursor):
         self.modes = {
@@ -171,6 +174,10 @@ class KeyMode(object):
 
     def switch_mode(self, modename):
         old_mode = self.mode
+        old_mode.commit()
         self.mode = self.modes[modename]
         self.mode.setup()
         self.mode.migrate_from(old_mode)
+
+    def commit(self):
+        self.mode.commit()
