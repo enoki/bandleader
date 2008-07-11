@@ -8,7 +8,7 @@ class ChordMode(object):
         key = event.key()
         if key == Qt.Key_H or key == Qt.Key_Left:
             self.cursor.move_left()
-        elif key == Qt.Key_L or key == Qt.Key_Right:
+        elif key == Qt.Key_L or key == Qt.Key_Right or key == Qt.Key_Return:
             self.cursor.move_right()
         elif key == Qt.Key_K or key == Qt.Key_Up:
             self.cursor.move_up()
