@@ -4,9 +4,10 @@ class ChordCursor(object):
     AboutToBeMoved = notify.Signal()
     Moved = notify.Signal()
 
-    def __init__(self, score, bars_per_row):
+    def __init__(self, score, row_column_of, bar_index_of):
         self.score = score
-        self.bars_per_row = bars_per_row
+        self.row_column_of = row_column_of
+        self.bar_index_of = bar_index_of
         self.bar_index = 0
         self.beat_index = 0
         self.zoomlevel = 2
@@ -54,7 +55,7 @@ class ChordCursor(object):
         row, column = self.row_column()
         if row < self.last_row():
             row += 1
-            self.bar_index = self.bar_number_of(row, column)
+            self.bar_index = self.bar_index_of(row, column)
             if self.bar_index > self.bar_count()-1:
                 self.bar_index = self.bar_count()-1
 
@@ -62,7 +63,7 @@ class ChordCursor(object):
         row, column = self.row_column()
         if row > 0:
             row -= 1
-            self.bar_index = self.bar_number_of(row, column)
+            self.bar_index = self.bar_index_of(row, column)
 
     def do_move_to(self, bar_index, beat_index):
         self.bar_index = bar_index
@@ -96,10 +97,7 @@ class ChordCursor(object):
         return self.score[self.bar_index]
 
     def row_column(self):
-        return divmod(self.bar_index, self.bars_per_row)
+        return self.row_column_of(self.bar_index)
 
     def last_row(self):
-        return (self.bar_count()-1) // self.bars_per_row
-
-    def bar_number_of(self, row, col):
-        return row * self.bars_per_row + col
+        return self.row_column_of(self.bar_count()-1)

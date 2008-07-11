@@ -42,7 +42,9 @@ class ScoreWindow(QWidget):
         layout.addWidget(scroller)
 
     def create_cursors(self, score):
-        self.chord_cursor = ChordCursor(score, 2)
+        self.chord_cursor = ChordCursor(score,
+                                        self.bar_layout.row_column_of,
+                                        self.bar_layout.index_of)
 
         notify.connect(self.unmove_chord_cursor, ChordCursor.AboutToBeMoved,
                        self.chord_cursor)
