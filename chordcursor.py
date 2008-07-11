@@ -33,7 +33,7 @@ class ChordCursor(object):
 
     def do_move_right(self):
         beat_index = self.beat_index + self.zoomfactor()
-        if beat_index >= beats_per_bar:
+        if beat_index >= self.current_bar().beats_per_bar:
             if self.bar_index < self.bar_count()-1:
                 self.bar_index += 1
                 self.beat_index = 0
