@@ -148,10 +148,11 @@ class ChordMode(object):
             cursor.move_up()
         elif key == Qt.Key_J or key == Qt.Key_Down:
             cursor.move_down()
-        elif key == Qt.Key_Home and control_down:
-            cursor.move_to_start()
-        elif key == Qt.Key_End and control_down:
+        elif (key == Qt.Key_T and shift_down) or (
+              key == Qt.Key_End and control_down):
             cursor.move_to_end()
+        elif key == Qt.Key_T or (key == Qt.Key_Home and control_down):
+            cursor.move_to_start()
         elif key == Qt.Key_0 or key == Qt.Key_Home:
             cursor.move_to_row_start()
         elif key == Qt.Key_Dollar or key == Qt.Key_End:
