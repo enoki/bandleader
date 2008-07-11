@@ -10,7 +10,8 @@ class ChordCursor(object):
         self.zoomlevel = 2
         self.about_to_be_moved = notify.Signal()
         self.moved = notify.Signal()
-        self.text_appended = notify.Signal()
+        self.request_append = notify.Signal()
+        self.request_backspace = notify.Signal()
 
     def move(self, move_function):
         self.about_to_be_moved(self.bar_index, self.beat_index)
@@ -110,4 +111,7 @@ class ChordCursor(object):
         return row
 
     def append_text(self, text):
-        self.text_appended(self.bar_index, self.beat_index, text)
+        self.request_append(self.bar_index, self.beat_index, text)
+
+    def backspace_text(self):
+        self.request_backspace(self.bar_index, self.beat_index)

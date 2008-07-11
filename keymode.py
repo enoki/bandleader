@@ -21,6 +21,8 @@ class ChordMode(object):
             cursor.move_down()
         elif key == Qt.Key_C:
             cursor.append_text('C')
+        elif key == Qt.Key_Backspace:
+            cursor.backspace_text()
         else:
             return False
         return True
