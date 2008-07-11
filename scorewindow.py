@@ -4,6 +4,7 @@ import louie as notify
 from barwindow import BarWindow, BarScene
 from flowlayout import FlowLayout
 from chordcursor import ChordCursor
+from keymode import KeyMode
 
 def set_background(widget, color):
     palette = widget.palette()
@@ -47,14 +48,18 @@ class ScoreWindow(QWidget):
         self.chord_cursor = ChordCursor(score,
                                         self.bar_layout.row_column_of,
                                         self.bar_layout.index_of)
+        self.connect_chord_cursor()
 
+        self.grabKeyboard()
+
+        self.keymode = KeyMode(self.chord_cursor)
+        self.keymode.switch_mode('chord')
+
+    def connect_chord_cursor(self):
         notify.connect(self.unmove_chord_cursor, ChordCursor.AboutToBeMoved,
                        self.chord_cursor)
         notify.connect(self.move_chord_cursor, ChordCursor.Moved,
                        self.chord_cursor)
-
-        self.grabKeyboard()
-        self.move_chord_cursor(0, 0)
 
     def move_chord_cursor(self, bar_index, beat_index):
         self.bars[bar_index].focus_chord_label(beat_index)
@@ -64,14 +69,6 @@ class ScoreWindow(QWidget):
         self.bars[bar_index].unfocus_chord_label(beat_index)
 
     def keyPressEvent(self, event):
-        key = event.key()
-        if key == Qt.Key_H or key == Qt.Key_Left:
-            self.chord_cursor.move_left()
-        elif key == Qt.Key_L or key == Qt.Key_Right:
-            self.chord_cursor.move_right()
-        elif key == Qt.Key_K or key == Qt.Key_Up:
-            self.chord_cursor.move_up()
-        elif key == Qt.Key_J or key == Qt.Key_Down:
-            self.chord_cursor.move_down()
-        else:
+        handled = self.keymode.keyPressEvent(event)
+        if not handled:
             QWidget.keyPressEvent(self, event)
