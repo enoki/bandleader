@@ -28,7 +28,7 @@ class ScoreWindow(QWidget):
         self.bar_layout = bar_layout
 
         for i, bar in enumerate(score):
-            b = self.create_bar(i, bar)
+            b = self.create_bar(i)
             bar_layout.addWidget(b)
 
         scroller = QScrollArea()
@@ -65,6 +65,7 @@ class ScoreWindow(QWidget):
         cursor.about_to_delete_bar.connect(self.prepare_delete_bar)
         cursor.bar_deleted.connect(self.delete_bar)
         cursor.bar_inserted.connect(self.insert_bar)
+        cursor.bar_appended.connect(self.append_bar)
 
     def move_chord_cursor(self, bar_index, beat_index):
         self.bars[bar_index].focus_chord_label(beat_index)
@@ -104,15 +105,21 @@ class ScoreWindow(QWidget):
             self.bars[i].set_bar_index(i)
 
     def insert_bar(self, bar_index):
-        b = self.create_bar(bar_index, self.score[bar_index])
+        b = self.create_bar(bar_index)
         self.bar_layout.insert_widget(bar_index, b)
         b.show()
 
         for i in xrange(bar_index, len(self.score)):
             self.bars[i].set_bar_index(i)
 
-    def create_bar(self, bar_index, bar):
-        scene = BarScene(bar, bar_index)
+    def append_bar(self):
+        b = self.create_bar(len(self.score)-1)
+        self.bar_layout.addWidget(b)
+        b.show()
+        QApplication.processEvents()
+
+    def create_bar(self, bar_index):
+        scene = BarScene(self.score[bar_index], bar_index)
         b = BarWindow(self.inner_widget)
         b.setScene(scene)
         self.bars.insert(bar_index, scene)

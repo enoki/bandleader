@@ -163,6 +163,8 @@ class ChordMode(object):
             cursor.zoom_in()
         elif key == Qt.Key_Delete and control_down:
             cursor.delete_bar()
+        elif key == Qt.Key_I and shift_down:
+            cursor.append_bar()
         elif key == Qt.Key_I:
             cursor.insert_bar()
         else:

@@ -15,6 +15,7 @@ class ChordCursor(object):
         self.bar_deleted = notify.Signal()
         self.about_to_insert_bar = notify.Signal()
         self.bar_inserted = notify.Signal()
+        self.bar_appended = notify.Signal()
         self.request_append = notify.Signal()
         self.request_backspace = notify.Signal()
         self.request_delete = notify.Signal()
@@ -183,11 +184,22 @@ class ChordCursor(object):
             self.moved(self.bar_index, self.beat_index)
 
     def insert_bar(self):
-        self.about_to_be_moved(self.bar_index, self.beat_index)
+        self.move(self.do_insert_bar)
+
+    def do_insert_bar(self):
         self.about_to_insert_bar(self.bar_index)
         self.score.insert(self.bar_index, ScoreBar(4, 4, 4))
         self.bar_inserted(self.bar_index)
-        self.moved(self.bar_index, self.beat_index)
+        self.beat_index = 0
+
+    def append_bar(self):
+        self.move(self.do_append_bar)
+
+    def do_append_bar(self):
+        self.score.append(ScoreBar(4, 4, 4))
+        self.bar_appended()
+        self.bar_index = len(self.score)-1
+        self.beat_index = 0
 
     def reset_bar(self):
         for beat_index in xrange(len(self.score[self.bar_index].chords)):
