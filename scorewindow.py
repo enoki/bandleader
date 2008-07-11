@@ -15,7 +15,6 @@ class ScoreWindow(QWidget):
         QWidget.__init__(self, *args)
         self.score = score
         self.bars = []
-        self.bar_windows = []
         self.create_controls(score)
         self.create_cursors(score)
 
@@ -35,7 +34,6 @@ class ScoreWindow(QWidget):
             bar_layout.addWidget(b)
             self.connect_bar(scene)
             self.bars.append(scene)
-            self.bar_windows.append(b)
 
         scroller = QScrollArea()
         scroller.setWidget(inner_widget)
@@ -74,7 +72,8 @@ class ScoreWindow(QWidget):
 
     def move_chord_cursor(self, bar_index, beat_index):
         self.bars[bar_index].focus_chord_label(beat_index)
-        self.scroller.ensureWidgetVisible(self.bar_windows[bar_index])
+        for view in self.bars[bar_index].views():
+            self.scroller.ensureWidgetVisible(view)
 
     def unmove_chord_cursor(self, bar_index, beat_index):
         self.chord_cursor.commit()
@@ -99,11 +98,11 @@ class ScoreWindow(QWidget):
         pass
 
     def delete_bar(self, bar_index):
-        widget = self.bar_windows[bar_index]
-        self.bar_layout.removeWidget(widget)
-        widget.deleteLater()
+        for widget in self.bars[bar_index].views():
+            self.bar_layout.removeWidget(widget)
+            widget.deleteLater()
+
         del self.bars[bar_index]
-        del self.bar_windows[bar_index]
 
         for i in xrange(bar_index, len(self.score)):
             self.bars[i].set_bar_index(i)
@@ -114,7 +113,6 @@ class ScoreWindow(QWidget):
         b.setScene(scene)
         self.bar_layout.insert_widget(bar_index, b)
         self.bars.insert(bar_index, scene)
-        self.bar_windows.insert(bar_index, b)
         self.connect_bar(scene)
         b.show()
 
