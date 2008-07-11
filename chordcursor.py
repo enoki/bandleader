@@ -40,6 +40,12 @@ class ChordCursor(object):
     def move_to_row_end(self):
         self.move(self.do_move_to_row_end)
 
+    def move_to_start(self):
+        self.move(self.do_move_to_start)
+
+    def move_to_end(self):
+        self.move(self.do_move_to_end)
+
     def do_move_right(self):
         beat_index = self.beat_index + self.zoomfactor()
         if beat_index >= self.current_bar().beats_per_bar:
@@ -97,6 +103,14 @@ class ChordCursor(object):
                 column += 1
             except KeyError:
                 break
+
+    def do_move_to_start(self):
+        self.bar_index = 0
+        self.beat_index = 0
+
+    def do_move_to_end(self):
+        self.bar_index = len(self.score)-1
+        self.beat_index = self.score[self.bar_index].beats_per_bar-1
 
     def zoomfactor(self):
         beats_per_bar = self.current_bar().beats_per_bar

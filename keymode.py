@@ -12,7 +12,7 @@ legal_before_modifier = note_names | chord_lifts | chord_tonalities
 
 def handle_chord_input(cursor, key, key_modifiers):
     current_text = cursor.current_text()
-    shift_down = key_modifiers & Qt.SHIFT
+    shift_down = key_modifiers & Qt.ShiftModifier
 
     def append_slash():
         if len(current_text) > 0 and current_text.find('/') == -1:
@@ -137,7 +137,8 @@ class ChordMode(object):
     def keyPressEvent(self, event):
         key = event.key()
         key_modifiers = event.modifiers()
-        shift_down = key_modifiers & Qt.SHIFT
+        control_down = key_modifiers & Qt.ControlModifier
+        shift_down = key_modifiers & Qt.ShiftModifier
         cursor = self.cursor
         if key == Qt.Key_H or key == Qt.Key_Left:
             cursor.move_left()
@@ -147,6 +148,10 @@ class ChordMode(object):
             cursor.move_up()
         elif key == Qt.Key_J or key == Qt.Key_Down:
             cursor.move_down()
+        elif key == Qt.Key_Home and control_down:
+            cursor.move_to_start()
+        elif key == Qt.Key_End and control_down:
+            cursor.move_to_end()
         elif key == Qt.Key_0 or key == Qt.Key_Home:
             cursor.move_to_row_start()
         elif key == Qt.Key_Dollar or key == Qt.Key_End:
