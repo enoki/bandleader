@@ -15,6 +15,7 @@ class ScoreWindow(QWidget):
         QWidget.__init__(self, *args)
         self.score = score
         self.bars = []
+        self.bar_windows = []
         self.create_controls(score)
         self.create_cursors(score)
 
@@ -32,6 +33,7 @@ class ScoreWindow(QWidget):
             b.setScene(scene)
             bar_layout.addWidget(b)
             self.bars.append(scene)
+            self.bar_windows.append(b)
 
         scroller = QScrollArea()
         scroller.setWidget(inner_widget)
@@ -56,6 +58,7 @@ class ScoreWindow(QWidget):
 
     def move_chord_cursor(self, bar_index, beat_index):
         self.bars[bar_index].focus_chord_label(beat_index)
+        self.scroller.ensureWidgetVisible(self.bar_windows[bar_index])
 
     def unmove_chord_cursor(self, bar_index, beat_index):
         self.bars[bar_index].unfocus_chord_label(beat_index)
