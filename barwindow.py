@@ -155,6 +155,11 @@ class ChordLabel(QGraphicsTextItem):
         cursor.deletePreviousChar()
         self.setTextCursor(cursor)
 
+    def delete_text(self):
+        cursor = self.textCursor()
+        cursor.deleteChar()
+        self.setTextCursor(cursor)
+
     def keyPressEvent(self, event):
         event.ignore()
 
@@ -670,6 +675,11 @@ class BarScene(QGraphicsScene):
         if index in self.chord_labels:
             label = self.chord_labels[index]
             label.backspace()
+
+    def delete_in_chord_label(self, index):
+        if index in self.chord_labels:
+            label = self.chord_labels[index]
+            label.delete_text()
 
 class BarWindow(QGraphicsView):
     def __init__(self, *args):

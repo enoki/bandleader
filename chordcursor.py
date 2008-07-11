@@ -12,6 +12,7 @@ class ChordCursor(object):
         self.moved = notify.Signal()
         self.request_append = notify.Signal()
         self.request_backspace = notify.Signal()
+        self.request_delete = notify.Signal()
 
     def move(self, move_function):
         self.about_to_be_moved(self.bar_index, self.beat_index)
@@ -115,3 +116,6 @@ class ChordCursor(object):
 
     def backspace_text(self):
         self.request_backspace(self.bar_index, self.beat_index)
+
+    def delete_text(self):
+        self.request_delete(self.bar_index, self.beat_index)

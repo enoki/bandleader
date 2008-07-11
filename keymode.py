@@ -23,6 +23,8 @@ class ChordMode(object):
             cursor.append_text('C')
         elif key == Qt.Key_Backspace:
             cursor.backspace_text()
+        elif key == Qt.Key_Delete:
+            cursor.delete_text()
         else:
             return False
         return True
