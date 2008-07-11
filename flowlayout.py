@@ -77,7 +77,6 @@ class FlowLayout(QLayout):
         for index, item in enumerate(self.items):
             nextX = x + item.sizeHint().width() + spacing
             if (nextX - spacing > rect.right()) and lineHeight > 0:
-                right_x = max(x, right_x)
                 x = rect.x()
                 y = y + lineHeight + spacing
                 nextX = x + item.sizeHint().width() + spacing
@@ -90,6 +89,7 @@ class FlowLayout(QLayout):
 
             row_column[id(item)] = (row, col)
             index_by_row_column[(row, col)] = index
+            right_x = max(nextX, right_x)
 
             x = nextX
             lineHeight = max(lineHeight, item.sizeHint().height())
