@@ -44,24 +44,30 @@ class ScoreWindow(QWidget):
     def create_cursors(self, score):
         self.chord_cursor = ChordCursor(score, 2)
 
-        def move_cursor(bar_index, beat_index):
-            self.bars[bar_index].focus_chord_label(beat_index)
+        notify.connect(self.unmove_chord_cursor, ChordCursor.AboutToBeMoved,
+                       self.chord_cursor)
+        notify.connect(self.move_chord_cursor, ChordCursor.Moved,
+                       self.chord_cursor)
 
-        notify.connect(ChordCursor.Moved, move_cursor)
+        self.grabKeyboard()
+        self.move_chord_cursor(0, 0)
+
+    def move_chord_cursor(self, bar_index, beat_index):
+        self.bars[bar_index].focus_chord_label(beat_index)
+
+    def unmove_chord_cursor(self, bar_index, beat_index):
+        self.bars[bar_index].unfocus_chord_label(beat_index)
 
     def keyPressEvent(self, event):
         key = event.key()
-        if key == Qt.Key_Left:
+        if key == Qt.Key_H or key == Qt.Key_Left:
             self.chord_cursor.move_left()
-            print 'move left'
-        elif key == Qt.Key_Right:
+        elif key == Qt.Key_L or key == Qt.Key_Right:
             self.chord_cursor.move_right()
-            print 'move right'
-        elif key == Qt.Key_Up:
+        elif key == Qt.Key_K or key == Qt.Key_Up:
             self.chord_cursor.move_up()
-        elif key == Qt.Key_Down:
+        elif key == Qt.Key_J or key == Qt.Key_Down:
             self.chord_cursor.move_down()
-            print 'move dodwn'
         else:
             print 'key %d' % key
             QWidget.keyPressEvent(self, event)
