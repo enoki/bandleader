@@ -692,6 +692,7 @@ class BarScene(QGraphicsScene):
     def unfocus_chord_label(self, index):
         if index in self.chord_labels:
             label = self.chord_labels[index]
+            label.clearFocus()
             label.select_none()
 
     def append_to_chord_label(self, index, text):
