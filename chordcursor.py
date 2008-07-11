@@ -1,4 +1,5 @@
 import notify
+from music import ScoreBar
 
 class ChordCursor(object):
     def __init__(self, score, row_column_of, bar_index_of):
@@ -12,6 +13,8 @@ class ChordCursor(object):
         self.moved = notify.Signal()
         self.about_to_delete_bar = notify.Signal()
         self.bar_deleted = notify.Signal()
+        self.about_to_insert_bar = notify.Signal()
+        self.bar_inserted = notify.Signal()
         self.request_append = notify.Signal()
         self.request_backspace = notify.Signal()
         self.request_delete = notify.Signal()
@@ -178,6 +181,13 @@ class ChordCursor(object):
                 self.bar_index -= 1
                 self.beat_index = self.score[self.bar_index].beats_per_bar-1
             self.moved(self.bar_index, self.beat_index)
+
+    def insert_bar(self):
+        self.about_to_be_moved(self.bar_index, self.beat_index)
+        self.about_to_insert_bar(self.bar_index)
+        self.score.insert(self.bar_index, ScoreBar(4, 4, 4))
+        self.bar_inserted(self.bar_index)
+        self.moved(self.bar_index, self.beat_index)
 
     def reset_bar(self):
         for beat_index in xrange(len(self.score[self.bar_index].chords)):

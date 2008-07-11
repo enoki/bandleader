@@ -30,6 +30,9 @@ class FlowLayout(QLayout):
         else:
             return None
 
+    def insert_widget(self, index, widget):
+        self.items.insert(index, QWidgetItem(widget))
+
     def row_column_of(self, index):
         return self.row_column[id(self.items[index])]
 
