@@ -6,7 +6,7 @@ chord_tonalities = set(['m', 'M'])
 chord_lifts = set(['#', 'b'])
 note_names = set(['A', 'B', 'C', 'D', 'E', 'F', 'G'])
 chord_numbers = set(['1', '2', '4', '5', '6', '7', '9'])
-legal_before_lift = note_names
+legal_before_lift = note_names | chord_numbers
 legal_before_tonality = note_names | chord_lifts
 legal_before_modifier = note_names | chord_lifts | chord_tonalities
 
