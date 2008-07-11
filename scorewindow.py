@@ -32,6 +32,7 @@ class ScoreWindow(QWidget):
             b = BarWindow()
             b.setScene(scene)
             bar_layout.addWidget(b)
+            self.connect_bar(scene)
             self.bars.append(scene)
             self.bar_windows.append(b)
 
@@ -53,6 +54,10 @@ class ScoreWindow(QWidget):
 
         self.keymode = KeyMode(self.chord_cursor)
         self.keymode.switch_mode('chord')
+
+    def connect_bar(self, bar):
+        bar.chord_label_focused_by_mouse.connect(
+                self.chord_label_focused_by_mouse)
 
     def connect_chord_cursor(self):
         cursor = self.chord_cursor
@@ -77,6 +82,9 @@ class ScoreWindow(QWidget):
 
     def delete_chord_cursor_text(self, bar_index, beat_index):
         self.bars[bar_index].delete_in_chord_label(beat_index)
+
+    def chord_label_focused_by_mouse(self, bar_index, beat_index):
+        self.chord_cursor.move_to(bar_index, beat_index)
 
     def keyPressEvent(self, event):
         handled = self.keymode.keyPressEvent(event)

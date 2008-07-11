@@ -134,6 +134,7 @@ class ChordLabel(QGraphicsTextItem):
         self.setPos(x, y)
         self.setTextInteractionFlags(Qt.TextEditable)
         self.beat_index = beat_index
+        self.focused_by_mouse = notify.Signal()
 
     def select_all(self):
         cursor = self.textCursor()
@@ -166,6 +167,27 @@ class ChordLabel(QGraphicsTextItem):
     def keyReleaseEvent(self, event):
         event.ignore()
 
+    def focusInEvent(self, event):
+        if event.reason() == Qt.MouseFocusReason:
+            self.select_all()
+            self.focused_by_mouse(self.beat_index)
+        QGraphicsTextItem.focusInEvent(self, event)
+
+    def mousePressEvent(self, event):
+        if self.hasFocus():
+            event.ignore()
+        else:
+            QGraphicsTextItem.mousePressEvent(self, event)
+
+    def mouseMoveEvent(self, event):
+        event.ignore()
+
+    def mouseReleaseEvent(self, event):
+        event.ignore()
+
+    def mouseDoubleClickEvent(self, event):
+        event.ignore()
+
 class BarScene(QGraphicsScene):
     def __init__(self, score_bar, bar_index):
         QGraphicsScene.__init__(self)
@@ -174,6 +196,7 @@ class BarScene(QGraphicsScene):
         self.items_by_tag = {}
         self.items_by_id = {}
         self.chord_labels = {}
+        self.chord_label_focused_by_mouse = notify.Signal()
         create_images()
         self.create_initial_scene()
 
@@ -276,6 +299,8 @@ class BarScene(QGraphicsScene):
         self.add_item(label, tags=('static', 'chordlabel'))
         QObject.connect(label.document(), SIGNAL('contentsChanged()'),
                         commit_chord)
+
+        label.focused_by_mouse.connect(self.on_chord_label_focused_by_mouse)
 
         self.chord_labels[index] = label
 
@@ -654,6 +679,9 @@ class BarScene(QGraphicsScene):
         path.arcTo(x, y, abs(x2-x), abs(y2-y), 0, extent)
         item = QGraphicsPathItem(path)
         self.add_item(item, tags=('note', 'noteimage'))
+
+    def on_chord_label_focused_by_mouse(self, beat_index):
+        self.chord_label_focused_by_mouse(self.bar_index, beat_index)
 
     def focus_chord_label(self, index):
         if index in self.chord_labels:
