@@ -28,12 +28,8 @@ class ScoreWindow(QWidget):
         self.bar_layout = bar_layout
 
         for i, bar in enumerate(score):
-            scene = BarScene(bar, i)
-            b = BarWindow()
-            b.setScene(scene)
+            b = self.create_bar(i, bar)
             bar_layout.addWidget(b)
-            self.connect_bar(scene)
-            self.bars.append(scene)
 
         scroller = QScrollArea()
         scroller.setWidget(inner_widget)
@@ -108,16 +104,20 @@ class ScoreWindow(QWidget):
             self.bars[i].set_bar_index(i)
 
     def insert_bar(self, bar_index):
-        scene = BarScene(self.score[bar_index], bar_index)
-        b = BarWindow(self.inner_widget)
-        b.setScene(scene)
+        b = self.create_bar(bar_index, self.score[bar_index])
         self.bar_layout.insert_widget(bar_index, b)
-        self.bars.insert(bar_index, scene)
-        self.connect_bar(scene)
         b.show()
 
         for i in xrange(bar_index, len(self.score)):
             self.bars[i].set_bar_index(i)
+
+    def create_bar(self, bar_index, bar):
+        scene = BarScene(bar, bar_index)
+        b = BarWindow(self.inner_widget)
+        b.setScene(scene)
+        self.bars.insert(bar_index, scene)
+        self.connect_bar(scene)
+        return b
 
     def keyPressEvent(self, event):
         handled = self.keymode.keyPressEvent(event)
