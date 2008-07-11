@@ -149,6 +149,8 @@ class ChordMode(object):
             cursor.move_down()
         elif key == Qt.Key_0 or key == Qt.Key_Home:
             cursor.move_to_row_start()
+        elif key == Qt.Key_Dollar or key == Qt.Key_End:
+            cursor.move_to_row_end()
         elif key == Qt.Key_Z and shift_down:
             cursor.zoom_in_lots()
         elif key == Qt.Key_Z:
