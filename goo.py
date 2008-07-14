@@ -158,3 +158,12 @@ def goo_duration_to_duration(goo_duration, score_bar):
         duration += duration / 2
     return duration
 
+def score_to_goo(score):
+    for score_bar in score:
+        yield score_bar_to_goo(score_bar)
+
+def flat_goo(goo):
+    for bar in goo:
+        for goo_piece in bar:
+            yield goo_piece
+
