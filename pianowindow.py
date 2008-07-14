@@ -7,7 +7,7 @@ black_key_width = 25
 white_key_height = 200
 black_key_height = 100
 
-white_key_count = 7
+white_key_count = 14
 black_key_map = [(0, 1), (1, 2), (3, 4), (4, 5), (5, 6)]
 
 def rect_of_white_key(index):
@@ -57,10 +57,11 @@ class PianoScene(QGraphicsScene):
             key.on_mouse_press.connect(self.white_key_pressed)
 
     def create_black_keys(self):
-        for i1, i2 in black_key_map:
-            key = BlackPianoKey(i1, i2)
-            self.addItem(key)
-            key.on_mouse_press.connect(self.black_key_pressed)
+        for i in xrange(0, white_key_count, 7):
+            for i1, i2 in black_key_map:
+                key = BlackPianoKey(i1 + i, i2 + i)
+                self.addItem(key)
+                key.on_mouse_press.connect(self.black_key_pressed)
 
     def white_key_pressed(self, event, index):
         self.note_pressed(index)
