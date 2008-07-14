@@ -130,3 +130,13 @@ class ScoreWindow(QWidget):
         handled = self.keymode.keyPressEvent(event)
         if not handled:
             QWidget.keyPressEvent(self, event)
+
+if __name__ == '__main__':
+    import sys
+    from music import Score
+    app = QApplication(sys.argv)
+    score = Score()
+    score.add_bars(4, 4, 4, 4)
+    window = ScoreWindow(score)
+    window.show()
+    app.exec_()
