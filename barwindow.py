@@ -732,3 +732,12 @@ class BarWindow(QGraphicsView):
     def fit_to_scene(self):
         scene = self.scene()
         self.setFixedWidth(xtile_size * scene.score_bar.bar_divisions + 2)
+
+if __name__ == '__main__':
+    import sys
+    app = QApplication(sys.argv)
+    scene = BarScene(ScoreBar(4, 4, 4), 0)
+    window = BarWindow()
+    window.setScene(scene)
+    window.show()
+    app.exec_()
