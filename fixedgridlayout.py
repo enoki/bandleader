@@ -2,8 +2,8 @@ from PyQt4.QtCore import Qt, QSize, QRect, QPoint
 from PyQt4.QtGui import QLayout, QWidgetItem
 
 class FixedGridLayout(QLayout):
-    def __init__(self, column_count, parent=None):
-        QLayout.__init__(self, parent)
+    def __init__(self, column_count, *args):
+        QLayout.__init__(self, *args)
         self.items = []
         self.column_count = column_count
         self.setMargin(0)
@@ -51,16 +51,14 @@ class FixedGridLayout(QLayout):
         self.doLayout(rect)
 
     def sizeHint(self):
-        return QSize(600, self.minimumSize().height())
+        if self.count() <= 0:
+            return QSize(0, 0)
+        itemheight = self.items[0].sizeHint().height()
+        row_count = self.count() // self.column_count
+        return QSize(500, itemheight * row_count)
 
     def minimumSize(self):
-        size = QSize()
-        for item in self.items:
-            size = size.expandedTo(item.minimumSize())
-
-        margin = self.margin()
-        size += QSize(2*margin, 2*margin)
-        return size
+        return self.sizeHint()
 
     def doLayout(self, rect):
         if len(self.items) <= 0:
