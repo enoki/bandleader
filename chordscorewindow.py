@@ -53,7 +53,10 @@ class FixedGridLayout(QGridLayout):
         return row * self.column_count + column
 
 class ChordCursorHandler(object):
-    def __init__(self, cursor, bar_layout, scroller):
+    def __init__(self):
+        pass
+
+    def connect(self, cursor, bar_layout, scroller):
         self.cursor = cursor
         self.bar_layout = bar_layout
         self.scroller = scroller
@@ -129,6 +132,7 @@ class ScoreWindow(QWidget):
     def __init__(self, score, *args):
         QWidget.__init__(self, *args)
         self.score = score
+        self.chord_handler = ChordCursorHandler()
         self.create_controls(score)
         self.create_cursors(score)
 
@@ -160,15 +164,20 @@ class ScoreWindow(QWidget):
 
         self.grabKeyboard()
 
-        self.chord_handler = ChordCursorHandler(self.chord_cursor,
-                                                self.bar_layout,
-                                                self.scroller)
+        self.chord_handler.connect(self.chord_cursor,
+                                   self.bar_layout,
+                                   self.scroller)
 
         self.keymode = KeyMode(self.chord_cursor)
         self.keymode.switch_mode('chord')
 
+    def connect_bar(self, bar):
+        bar.chord_label_focused_by_mouse.connect(
+                self.chord_handler.chord_label_focused_by_mouse)
+
     def create_bar(self, bar_index):
         b = ChordBarWindow(self.score[bar_index], bar_index, self.inner_widget)
+        self.connect_bar(b)
         return b
 
     def keyPressEvent(self, event):

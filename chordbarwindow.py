@@ -1,5 +1,6 @@
 from PyQt4.QtCore import QRectF, QPointF, QSize, QPoint, QRect, Qt
 from PyQt4.QtGui import *
+import notify
 
 class BeatWidget(QWidget):
     def __init__(self, score_bar, beat_index, parent=None):
@@ -7,6 +8,7 @@ class BeatWidget(QWidget):
         self.score_bar = score_bar
         self.beat_index = beat_index
         self.setLayout(self.create_layout())
+        self.clicked = notify.Signal()
 
     def create_layout(self):
         layout = QHBoxLayout()
@@ -21,12 +23,16 @@ class BeatWidget(QWidget):
     def unset_focus(self):
         self.chord_label.setFrameShape(QFrame.NoFrame)
 
+    def mousePressEvent(self, event):
+        self.clicked(self.beat_index)
+
 class ChordBarWindow(QFrame):
     def __init__(self, score_bar, bar_index, parent=None):
         QFrame.__init__(self, parent)
         self.score_bar = score_bar
         self.bar_index = bar_index
         self.beats = []
+        self.chord_label_focused_by_mouse = notify.Signal()
         self.set_style()
         self.setLayout(self.create_layout())
 
@@ -40,9 +46,13 @@ class ChordBarWindow(QFrame):
         for beat_index in xrange(self.score_bar.beats_per_bar):
             beat = BeatWidget(self.score_bar, beat_index)
             layout.addWidget(beat)
+            beat.clicked.connect(self.on_beat_click)
             self.beats.append(beat)
 
         return layout
+
+    def on_beat_click(self, beat_index):
+        self.chord_label_focused_by_mouse(self.bar_index, beat_index)
 
     def focus_chord(self, beat_index):
         self.beats[beat_index].set_focus()
