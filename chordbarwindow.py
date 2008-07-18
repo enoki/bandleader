@@ -13,6 +13,7 @@ class BeatWidget(QWidget):
     def create_layout(self):
         layout = QHBoxLayout()
         chord_label = QLabel(self.score_bar.chords[self.beat_index])
+        chord_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(chord_label)
         self.chord_label = chord_label
         return layout
@@ -38,6 +39,7 @@ class ChordBarWindow(QFrame):
 
     def set_style(self):
         self.setFrameShape(QFrame.Box)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
     def create_layout(self):
         layout = QHBoxLayout()
