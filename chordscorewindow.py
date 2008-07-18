@@ -72,32 +72,32 @@ class FixedGridLayout(QLayout):
         return size
 
     def doLayout(self, rect):
+        if len(self.items) <= 0:
+            return
+
         x = rect.x()
         y = rect.y()
 
         col = 0
         row = 0
 
-        if len(self.items) <= 0:
-            return
+        column_count = self.column_count
 
-        itemwidth = rect.width() // self.column_count
+        itemwidth = rect.width() // column_count
         itemheight = self.items[0].sizeHint().height()
         itemsize = QSize(itemwidth, itemheight)
 
         for index, item in enumerate(self.items):
-            nextX = x + itemwidth
-            if (nextX > rect.right()):
-                x = rect.x()
-                y = y + itemheight
-                nextX = x + itemwidth
-                col = 0
-                row += 1
-
             item.setGeometry(QRect(QPoint(x, y), itemsize))
 
-            x = nextX
+            x += itemwidth
             col += 1
+
+            if col >= column_count:
+                x = rect.x()
+                y = y + itemheight
+                col = 0
+                row += 1
 
         return y + itemheight - rect.y()
 
