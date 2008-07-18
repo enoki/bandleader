@@ -50,6 +50,12 @@ class FixedGridLayout(QLayout):
         QLayout.setGeometry(self, rect)
         self.doLayout(rect)
 
+    def max_height(self):
+        max_height = 0
+        for item in self.items:
+            max_height = max(max_height, item.sizeHint().height())
+        return max_height
+
     def sizeHint(self):
         if self.count() <= 0:
             return QSize(0, 0)
