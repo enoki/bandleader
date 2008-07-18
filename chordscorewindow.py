@@ -1,4 +1,4 @@
-from PyQt4.QtCore import Qt
+from PyQt4.QtCore import Qt, QSize, QRect, QPoint
 from PyQt4.QtGui import *
 from chordbarwindow import ChordBarWindow
 from music import ScoreBar
@@ -10,47 +10,96 @@ def set_background(widget, color):
     palette.setColor(QPalette.Window, color)
     widget.setPalette(palette)
 
-class FixedGridLayout(QGridLayout):
-    def __init__(self, column_count, *args):
-        QGridLayout.__init__(self, *args)
+class FixedGridLayout(QLayout):
+    def __init__(self, column_count, parent=None):
+        QLayout.__init__(self, parent)
+        self.items = []
         self.column_count = column_count
+        self.setMargin(0)
+        self.setSpacing(-1)
 
-    def add_widget(self, widget, index, *args):
-        row, column = divmod(index, self.column_count)
-        self.addWidget(widget, row, column, *args)
-
-    def remove_widget(self, widget, index):
-        for i in xrange(index+1, self.count()):
-            row, column = divmod(i, self.column_count)
-            item = self.itemAtPosition(row, column)
-            self.removeItem(item)
-            new_row, new_column = divmod(i-1, self.column_count)
-            self.addItem(item, new_row, new_column)
-        self.removeWidget(widget)
-        widget.deleteLater()
-
-    def insert_widget(self, widget, index, *args):
-        for i in xrange(index, self.count()):
-            row, column = divmod(i, self.column_count)
-            item = self.itemAtPosition(row, column)
-            self.removeItem(item)
-            new_row, new_column = divmod(i+1, self.column_count)
-            self.addItem(item, new_row, new_column)
-        row, column = divmod(index, self.column_count)
-        self.addWidget(widget, row, column, *args)
-
-    def widget_at(self, row, column):
-        return self.itemAtPosition(row, column).widget()
-
-    def widget_by_index(self, index):
-        row, column = divmod(index, self.column_count)
-        return self.widget_at(row, column)
-
+##
     def row_column_of(self, index):
         return divmod(index, self.column_count)
 
     def index_of(self, row, column):
         return row * self.column_count + column
+
+    def widget_by_index(self, index):
+        return self.items[index].widget()
+
+    def insert_widget(self, index, widget):
+        self.items.insert(index, QWidgetItem(widget))
+##
+
+    def addItem(self, item):
+        self.items.append(item)
+
+    def count(self):
+        return len(self.items)
+
+    def itemAt(self, index):
+        if 0 <= index < len(self.items):
+            return self.items[index]
+        else:
+            return None
+
+    def takeAt(self, index):
+        if 0 <= index < len(self.items):
+            item = self.items[index]
+            self.items.remove(item)
+            return item
+        else:
+            return None
+
+    def expandingDirections(self):
+        return 0
+
+    def setGeometry(self, rect):
+        QLayout.setGeometry(self, rect)
+        self.doLayout(rect)
+
+    def sizeHint(self):
+        return self.minimumSize()
+
+    def minimumSize(self):
+        size = QSize()
+        for item in self.items:
+            size = size.expandedTo(item.minimumSize())
+
+        margin = self.margin()
+        size += QSize(2*margin, 2*margin)
+        return size
+
+    def doLayout(self, rect):
+        x = rect.x()
+        y = rect.y()
+
+        col = 0
+        row = 0
+
+        if len(self.items) <= 0:
+            return
+
+        itemwidth = rect.width() // self.column_count
+        itemheight = self.items[0].sizeHint().height()
+        itemsize = QSize(itemwidth, itemheight)
+
+        for index, item in enumerate(self.items):
+            nextX = x + itemwidth
+            if (nextX > rect.right()):
+                x = rect.x()
+                y = y + itemheight
+                nextX = x + itemwidth
+                col = 0
+                row += 1
+
+            item.setGeometry(QRect(QPoint(x, y), itemsize))
+
+            x = nextX
+            col += 1
+
+        return y + itemheight - rect.y()
 
 class ChordCursorHandler(object):
     def __init__(self):
@@ -98,7 +147,8 @@ class ChordCursorHandler(object):
     def change_chord_cursor_text(self, bar_index, beat_index, text):
         pass #self.bars[bar_index].change_chord_label(beat_index, text)
 
-    def chord_label_focused_by_mouse(self, bar_index, beat_index):
+    def chord_label_focused_by_mouse(self, bar, beat_index):
+        bar_index = self.bar_layout.indexOf(bar)
         self.cursor.move_to(bar_index, beat_index)
 
     def prepare_delete_bar(self, bar_index):
@@ -147,7 +197,7 @@ class ScoreWindow(QWidget):
 
         for i, bar in enumerate(score):
             b = self.create_bar(i)
-            bar_layout.add_widget(b, i)
+            bar_layout.addWidget(b)
 
         scroller = QScrollArea()
         scroller.setWidget(inner_widget)
@@ -176,7 +226,7 @@ class ScoreWindow(QWidget):
                 self.chord_handler.chord_label_focused_by_mouse)
 
     def create_bar(self, bar_index):
-        b = ChordBarWindow(self.score[bar_index], bar_index, self.inner_widget)
+        b = ChordBarWindow(self.score[bar_index], self.inner_widget)
         self.connect_bar(b)
         return b
 
@@ -189,11 +239,12 @@ class ScoreWindow(QWidget):
         key = event.key()
         if key == Qt.Key_A:
             widget = self.bar_layout.widget_by_index(1)
-            self.bar_layout.remove_widget(widget, 1)
+            self.bar_layout.removeWidget(widget)
         elif key == Qt.Key_B:
             self.score.insert(1, ScoreBar(2, 4, 4))
             bar = self.create_bar(1)
-            self.bar_layout.insert_widget(bar, 1)
+            self.bar_layout.insert_widget(1, bar)
+            bar.show()
 
 if __name__ == '__main__':
     import sys

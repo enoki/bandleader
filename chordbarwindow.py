@@ -28,10 +28,9 @@ class BeatWidget(QWidget):
         self.clicked(self.beat_index)
 
 class ChordBarWindow(QFrame):
-    def __init__(self, score_bar, bar_index, parent=None):
+    def __init__(self, score_bar, parent=None):
         QFrame.__init__(self, parent)
         self.score_bar = score_bar
-        self.bar_index = bar_index
         self.beats = []
         self.chord_label_focused_by_mouse = notify.Signal()
         self.set_style()
@@ -54,7 +53,7 @@ class ChordBarWindow(QFrame):
         return layout
 
     def on_beat_click(self, beat_index):
-        self.chord_label_focused_by_mouse(self.bar_index, beat_index)
+        self.chord_label_focused_by_mouse(self, beat_index)
 
     def focus_chord(self, beat_index):
         self.beats[beat_index].set_focus()
@@ -67,6 +66,6 @@ if __name__ == '__main__':
     from music import ScoreBar
     app = QApplication(sys.argv)
     bar = ScoreBar(4, 4, 4)
-    window = ChordBarWindow(bar, 0)
+    window = ChordBarWindow(bar)
     window.show()
     app.exec_()
