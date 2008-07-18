@@ -15,11 +15,18 @@ class BeatWidget(QWidget):
         self.chord_label = chord_label
         return layout
 
+    def set_focus(self):
+        self.chord_label.setFrameShape(QFrame.Box)
+
+    def unset_focus(self):
+        self.chord_label.setFrameShape(QFrame.NoFrame)
+
 class ChordBarWindow(QFrame):
     def __init__(self, score_bar, bar_index, parent=None):
         QFrame.__init__(self, parent)
         self.score_bar = score_bar
         self.bar_index = bar_index
+        self.beats = []
         self.set_style()
         self.setLayout(self.create_layout())
 
@@ -31,9 +38,17 @@ class ChordBarWindow(QFrame):
         layout.setSpacing(0)
 
         for beat_index in xrange(self.score_bar.beats_per_bar):
-            layout.addWidget(BeatWidget(self.score_bar, beat_index))
+            beat = BeatWidget(self.score_bar, beat_index)
+            layout.addWidget(beat)
+            self.beats.append(beat)
 
         return layout
+
+    def focus_chord(self, beat_index):
+        self.beats[beat_index].set_focus()
+
+    def unfocus_chord(self, beat_index):
+        self.beats[beat_index].unset_focus()
 
 if __name__ == '__main__':
     import sys
