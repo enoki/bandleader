@@ -51,7 +51,7 @@ class FixedGridLayout(QLayout):
         self.doLayout(rect)
 
     def sizeHint(self):
-        return self.minimumSize()
+        return QSize(600, self.minimumSize().height())
 
     def minimumSize(self):
         size = QSize()
