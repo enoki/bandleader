@@ -34,6 +34,7 @@ class ScoreWindow(QWidget):
         scroller = QScrollArea()
         scroller.setWidget(inner_widget)
         scroller.setWidgetResizable(True)
+        scroller.setFocusPolicy(Qt.NoFocus)
         self.scroller = scroller
 
         layout = QVBoxLayout(self)
@@ -44,8 +45,6 @@ class ScoreWindow(QWidget):
                                         self.bar_layout.row_column_of,
                                         self.bar_layout.index_of)
         self.connect_chord_cursor()
-
-        self.grabKeyboard()
 
         self.keymode = KeyMode(self.chord_cursor)
         self.keymode.switch_mode('chord')
@@ -125,6 +124,10 @@ class ScoreWindow(QWidget):
         self.bars.insert(bar_index, scene)
         self.connect_bar(scene)
         return b
+
+    def showEvent(self, event):
+        self.setFocus()
+        QWidget.showEvent(self, event)
 
     def keyPressEvent(self, event):
         handled = self.keymode.keyPressEvent(event)
