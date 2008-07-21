@@ -6,6 +6,7 @@ class ScoreTabs(QTabWidget):
     def __init__(self, score, *args):
         QTabWidget.__init__(self, *args)
         self.addTab(ScoreWindow(score, self), 'Untitled')
+        self.setFocusPolicy(Qt.NoFocus)
 
 class MainWindow(QMainWindow):
     def __init__(self, score, *args):
@@ -14,6 +15,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central)
         xtile_size = 24  # XXX
         self.resize(int((xtile_size*16+2)*2.5), self.height())
+        self.setFocusPolicy(Qt.NoFocus)
         self.create_actions()
         self.create_menus()
 
