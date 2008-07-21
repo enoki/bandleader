@@ -127,7 +127,6 @@ class ScoreWindow(QWidget):
                                    self.scroller)
 
         self.keymode = KeyMode(self.chord_cursor)
-        self.keymode.switch_mode('chord')
 
     def connect_bar(self, bar):
         bar.chord_label_focused_by_mouse.connect(
@@ -139,7 +138,7 @@ class ScoreWindow(QWidget):
         return b
 
     def showEvent(self, event):
-        self.setFocus()
+        self.keymode.switch_mode('chord')
         QWidget.showEvent(self, event)
 
     def keyPressEvent(self, event):
