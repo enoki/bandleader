@@ -4,7 +4,7 @@ from chordbarwindow import ChordBarWindow
 from music import ScoreBar
 from chordcursor import ChordCursor
 from keymode import KeyMode
-from fixedgridlayout import FixedGridLayout
+from flowlayout import FlowLayout
 
 def set_background(widget, color):
     palette = widget.palette()
@@ -101,8 +101,7 @@ class ScoreWindow(QWidget):
         set_background(inner_widget, QColor('white'))
         self.inner_widget = inner_widget
 
-        bar_layout = FixedGridLayout(4, inner_widget)
-        bar_layout.setSpacing(0)
+        bar_layout = FlowLayout(inner_widget)
         self.bar_layout = bar_layout
 
         for i, bar in enumerate(score):
