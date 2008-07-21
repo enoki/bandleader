@@ -75,7 +75,7 @@ class BeatWidget(QWidget):
         self.commit()
 
     def commit(self):
-        self.score_bar.chords[self.beat_index] = self.chord_label.text()
+        self.score_bar.chords[self.beat_index] = str(self.chord_label.text())
 
 class ChordBarWindow(QFrame):
     def __init__(self, score_bar, parent=None):
