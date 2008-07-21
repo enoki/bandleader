@@ -294,13 +294,7 @@ class BarScene(QGraphicsScene):
 
         label = ChordLabel(x, y, index, self.score_bar.chords[index])
 
-        def commit_chord():
-            self.score_bar.chords[index] = str(label.toPlainText())
-
         self.add_item(label, tags=('static', 'chordlabel'))
-        QObject.connect(label.document(), SIGNAL('contentsChanged()'),
-                        commit_chord)
-
         label.focused_by_mouse.connect(self.on_chord_label_focused_by_mouse)
 
         self.chord_labels[index] = label
