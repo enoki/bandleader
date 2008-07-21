@@ -64,6 +64,7 @@ class ScoreWindow(QWidget):
         cursor.bar_deleted.connect(self.delete_bar)
         cursor.bar_inserted.connect(self.insert_bar)
         cursor.bar_appended.connect(self.append_bar)
+        cursor.text_changed.connect(self.chord_cursor_text_changed)
 
     def move_chord_cursor(self, bar_index, beat_index):
         self.bars[bar_index].focus_chord_label(beat_index)
@@ -117,6 +118,10 @@ class ScoreWindow(QWidget):
         self.bar_layout.addWidget(b)
         b.show()
         QApplication.processEvents()
+
+    def chord_cursor_text_changed(self, parent_id, bar_index, beat_index):
+        if id(self) != parent_id:
+            self.bars[bar_index].update_chord_label(beat_index)
 
     def create_bar(self, bar_index):
         scene = BarScene(self.score[bar_index], bar_index)

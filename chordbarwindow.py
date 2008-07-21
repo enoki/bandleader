@@ -166,6 +166,9 @@ class ChordBarWindow(QFrame):
     def change_chord(self, beat_index, text):
         self.beats[beat_index].change_chord(text)
 
+    def update_chord(self, beat_index):
+        self.change_chord(beat_index, self.score_bar.chords[beat_index])
+
 if __name__ == '__main__':
     import sys
     from music import ScoreBar

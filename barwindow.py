@@ -176,7 +176,6 @@ class ChordLabel(QGraphicsTextItem):
 
     def focusOutEvent(self, event):
         self.focused_out(self.beat_index)
-        print 'b focus out'
         QGraphicsTextItem.focusOutEvent(self, event)
 
     def mousePressEvent(self, event):
@@ -724,6 +723,9 @@ class BarScene(QGraphicsScene):
         if index in self.chord_labels:
             label = self.chord_labels[index]
             label.setPlainText(text)
+
+    def update_chord_label(self, index):
+        self.change_chord_label(index, self.score_bar.chords[index])
 
     def on_chord_label_focused_out(self, index):
         self.request_chord_label_commit()

@@ -15,6 +15,7 @@ class ChordCursor(object):
         self.about_to_insert_bar = notify.Signal()
         self.bar_inserted = notify.Signal()
         self.bar_appended = notify.Signal()
+        self.text_changed = notify.Signal()
         self.request_text = notify.Signal()
         self.request_append = notify.Signal()
         self.request_backspace = notify.Signal()
@@ -165,6 +166,7 @@ class ChordCursor(object):
                 self.append_text('/')
             self.score[self.bar_index].chords[self.beat_index] = (
                     self.current_text())
+            self.text_changed(self.parent_id, self.bar_index, self.beat_index)
 
     def current_text(self):
         r = self.request_text(self.bar_index, self.beat_index)

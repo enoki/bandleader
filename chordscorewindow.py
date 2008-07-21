@@ -30,6 +30,7 @@ class ChordCursorHandler(object):
         cursor.bar_deleted.connect(self.delete_bar)
         cursor.bar_inserted.connect(self.insert_bar)
         cursor.bar_appended.connect(self.append_bar)
+        cursor.text_changed.connect(self.chord_cursor_text_changed)
 
     def bar_at(self, bar_index):
         return self.bar_layout.widget_by_index(bar_index)
@@ -88,6 +89,10 @@ class ChordCursorHandler(object):
         b.show()
         QApplication.processEvents()
 
+    def chord_cursor_text_changed(self, parent_id, bar_index, beat_index):
+        if id(self) != parent_id:
+            self.bar_at(bar_index).update_chord(beat_index)
+
 class ScoreWindow(QWidget):
     def __init__(self, score, keymode, *args):
         QWidget.__init__(self, *args)
@@ -122,7 +127,7 @@ class ScoreWindow(QWidget):
     def connect_cursors(self, score):
         self.chord_cursor.connect(self.bar_layout.row_column_of,
                                   self.bar_layout.index_of,
-                                  self)
+                                  self.chord_handler)
 
         self.chord_handler.connect(self.chord_cursor,
                                    self.bar_layout,
@@ -142,7 +147,7 @@ class ScoreWindow(QWidget):
     def showEvent(self, event):
         self.chord_cursor.connect(self.bar_layout.row_column_of,
                                   self.bar_layout.index_of,
-                                  self)
+                                  self.chord_handler)
         self.keymode.switch_mode('chord')
         QWidget.showEvent(self, event)
 
