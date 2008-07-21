@@ -2,8 +2,6 @@ from PyQt4.QtCore import Qt, QSize, QRect, QPoint
 from PyQt4.QtGui import *
 from chordbarwindow import ChordBarWindow
 from music import ScoreBar
-from chordcursor import ChordCursor
-from keymode import KeyMode
 from flowlayout import FlowLayout
 
 def set_background(widget, color):
@@ -89,12 +87,14 @@ class ChordCursorHandler(object):
         QApplication.processEvents()
 
 class ScoreWindow(QWidget):
-    def __init__(self, score, *args):
+    def __init__(self, score, keymode, *args):
         QWidget.__init__(self, *args)
         self.score = score
+        self.keymode = keymode
+        self.chord_cursor = self.keymode.chord_cursor
         self.chord_handler = ChordCursorHandler()
         self.create_controls(score)
-        self.create_cursors(score)
+        self.connect_cursors(score)
 
     def create_controls(self, score):
         inner_widget = QWidget(self)
@@ -117,16 +117,14 @@ class ScoreWindow(QWidget):
         layout = QVBoxLayout(self)
         layout.addWidget(scroller)
 
-    def create_cursors(self, score):
-        self.chord_cursor = ChordCursor(score,
-                                        self.bar_layout.row_column_of,
-                                        self.bar_layout.index_of)
+    def connect_cursors(self, score):
+        self.chord_cursor.connect(self.bar_layout.row_column_of,
+                                  self.bar_layout.index_of,
+                                  self)
 
         self.chord_handler.connect(self.chord_cursor,
                                    self.bar_layout,
                                    self.scroller)
-
-        self.keymode = KeyMode(self.chord_cursor)
 
     def connect_bar(self, bar):
         bar.chord_label_focused_by_mouse.connect(
@@ -138,6 +136,9 @@ class ScoreWindow(QWidget):
         return b
 
     def showEvent(self, event):
+        self.chord_cursor.connect(self.bar_layout.row_column_of,
+                                  self.bar_layout.index_of,
+                                  self)
         self.keymode.switch_mode('chord')
         QWidget.showEvent(self, event)
 
@@ -160,10 +161,14 @@ class ScoreWindow(QWidget):
 if __name__ == '__main__':
     import sys
     from music import Score
+    from chordcursor import ChordCursor
+    from keymode import KeyMode
     app = QApplication(sys.argv)
     score = Score()
     score.add_bars(4, 4, 4, 4)
     score.add_bars(3, 4, 4, 4)
-    window = ScoreWindow(score)
+    chord_cursor = ChordCursor(score)
+    keymode = KeyMode(chord_cursor)
+    window = ScoreWindow(score, keymode)
     window.show()
     app.exec_()

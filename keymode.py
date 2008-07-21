@@ -185,6 +185,7 @@ class ChordMode(object):
 
 class KeyMode(object):
     def __init__(self, chord_cursor):
+        self.chord_cursor = chord_cursor
         self.modes = {
                        'chord' : ChordMode(chord_cursor),
                      }

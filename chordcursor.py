@@ -2,10 +2,8 @@ import notify
 from music import ScoreBar
 
 class ChordCursor(object):
-    def __init__(self, score, row_column_of, bar_index_of):
+    def __init__(self, score):
         self.score = score
-        self.row_column_of = row_column_of
-        self.bar_index_of = bar_index_of
         self.bar_index = 0
         self.beat_index = 0
         self.zoomlevel = 2
@@ -22,6 +20,11 @@ class ChordCursor(object):
         self.request_backspace = notify.Signal()
         self.request_delete = notify.Signal()
         self.request_change_text = notify.Signal()
+
+    def connect(self, row_column_of, bar_index_of, parent):
+        self.row_column_of = row_column_of
+        self.bar_index_of = bar_index_of
+        self.parent_id = id(parent)
 
     def move(self, move_function):
         self.about_to_be_moved(self.bar_index, self.beat_index)

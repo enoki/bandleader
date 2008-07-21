@@ -4,17 +4,18 @@ from scorewindow import ScoreWindow
 from chordscorewindow import ScoreWindow as ChordScoreWindow
 
 class ScoreTabs(QTabWidget):
-    def __init__(self, score, *args):
+    def __init__(self, score, keymode, *args):
         QTabWidget.__init__(self, *args)
-        self.addTab(ScoreWindow(score, self), 'Untitled')
+        self.addTab(ScoreWindow(score, keymode, self), 'Untitled')
         self.setFocusPolicy(Qt.NoFocus)
 
 class MainWindow(QMainWindow):
-    def __init__(self, score, *args):
+    def __init__(self, score, keymode, *args):
         QMainWindow.__init__(self, *args)
-        tabs = ScoreTabs(score)
+        tabs = ScoreTabs(score, keymode)
         self.setCentralWidget(tabs)
         self.score = score
+        self.keymode = keymode
         self.tabs = tabs
         xtile_size = 24  # XXX
         self.resize(int((xtile_size*16+2)*2.5), self.height())
@@ -40,4 +41,5 @@ class MainWindow(QMainWindow):
         filemenu.addAction(self.exitAction)
 
     def new_tab(self):
-        self.tabs.addTab(ChordScoreWindow(self.score, self), 'Untitled2')
+        self.tabs.addTab(ChordScoreWindow(self.score, self.keymode, self),
+                         'Untitled2')
