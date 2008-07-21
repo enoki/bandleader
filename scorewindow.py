@@ -49,6 +49,8 @@ class ScoreWindow(QWidget):
     def connect_bar(self, bar):
         bar.chord_label_focused_by_mouse.connect(
                 self.chord_label_focused_by_mouse)
+        bar.request_chord_label_commit.connect(
+                self.commit_chord_cursor)
 
     def connect_chord_cursor(self):
         cursor = self.chord_cursor
@@ -69,7 +71,6 @@ class ScoreWindow(QWidget):
             self.scroller.ensureWidgetVisible(view)
 
     def unmove_chord_cursor(self, bar_index, beat_index):
-        self.chord_cursor.commit()
         self.bars[bar_index].unfocus_chord_label(beat_index)
 
     def get_chord_cursor_text(self, bar_index, beat_index):
@@ -89,6 +90,9 @@ class ScoreWindow(QWidget):
 
     def chord_label_focused_by_mouse(self, bar_index, beat_index):
         self.chord_cursor.move_to(bar_index, beat_index)
+
+    def commit_chord_cursor(self):
+        self.chord_cursor.commit()
 
     def delete_bar(self, bar_index):
         for widget in self.bars[bar_index].views():

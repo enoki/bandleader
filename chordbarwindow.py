@@ -7,6 +7,7 @@ class ChordLabel(QLineEdit):
         QLineEdit.__init__(self, *args)
         self.beat_index = beat_index
         self.focused_by_mouse = notify.Signal()
+        self.focused_out = notify.Signal()
         self.setAlignment(Qt.AlignCenter)
         self.setFrame(False)
 
@@ -40,6 +41,10 @@ class ChordLabel(QLineEdit):
             self.focused_by_mouse(self.beat_index)
         QLineEdit.focusInEvent(self, event)
 
+    def focusOutEvent(self, event):
+        self.focused_out(self.beat_index)
+        QLineEdit.focusOutEvent(self, event)
+
     def mousePressEvent(self, event):
         if self.hasFocus():
             event.ignore()
@@ -67,6 +72,7 @@ class BeatWidget(QWidget):
         layout = QHBoxLayout()
         chord_label = ChordLabel(self.beat_index,
                                  self.score_bar.chords[self.beat_index])
+        self.focused_out = chord_label.focused_out
         layout.addWidget(chord_label)
         self.chord_label = chord_label
         return layout
@@ -112,6 +118,7 @@ class ChordBarWindow(QFrame):
         self.score_bar = score_bar
         self.beats = []
         self.chord_label_focused_by_mouse = notify.Signal()
+        self.request_chord_label_commit = notify.Signal()
         self.set_style()
         self.setLayout(self.create_layout())
 
@@ -127,12 +134,16 @@ class ChordBarWindow(QFrame):
             beat = BeatWidget(self.score_bar, beat_index)
             layout.addWidget(beat)
             beat.clicked.connect(self.on_beat_click)
+            beat.focused_out.connect(self.on_beat_focused_out)
             self.beats.append(beat)
 
         return layout
 
     def on_beat_click(self, beat_index):
         self.chord_label_focused_by_mouse(self, beat_index)
+
+    def on_beat_focused_out(self, beat_index):
+        self.request_chord_label_commit()
 
     def focus_chord(self, beat_index):
         self.beats[beat_index].set_focus()

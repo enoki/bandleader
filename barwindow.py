@@ -135,6 +135,7 @@ class ChordLabel(QGraphicsTextItem):
         self.setTextInteractionFlags(Qt.TextEditable)
         self.beat_index = beat_index
         self.focused_by_mouse = notify.Signal()
+        self.focused_out = notify.Signal()
 
     def select_all(self):
         cursor = self.textCursor()
@@ -173,6 +174,11 @@ class ChordLabel(QGraphicsTextItem):
             self.focused_by_mouse(self.beat_index)
         QGraphicsTextItem.focusInEvent(self, event)
 
+    def focusOutEvent(self, event):
+        self.focused_out(self.beat_index)
+        print 'b focus out'
+        QGraphicsTextItem.focusOutEvent(self, event)
+
     def mousePressEvent(self, event):
         if self.hasFocus():
             event.ignore()
@@ -197,6 +203,7 @@ class BarScene(QGraphicsScene):
         self.items_by_id = {}
         self.chord_labels = {}
         self.chord_label_focused_by_mouse = notify.Signal()
+        self.request_chord_label_commit = notify.Signal()
         create_images()
         self.create_initial_scene()
 
@@ -296,6 +303,7 @@ class BarScene(QGraphicsScene):
 
         self.add_item(label, tags=('static', 'chordlabel'))
         label.focused_by_mouse.connect(self.on_chord_label_focused_by_mouse)
+        label.focused_out.connect(self.on_chord_label_focused_out)
 
         self.chord_labels[index] = label
 
@@ -716,6 +724,9 @@ class BarScene(QGraphicsScene):
         if index in self.chord_labels:
             label = self.chord_labels[index]
             label.setPlainText(text)
+
+    def on_chord_label_focused_out(self, index):
+        self.request_chord_label_commit()
 
     def set_bar_index(self, bar_index):
         self.bar_index = bar_index

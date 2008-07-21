@@ -40,7 +40,6 @@ class ChordCursorHandler(object):
         self.scroller.ensureWidgetVisible(bar)
 
     def unmove_from(self, bar_index, beat_index):
-        self.cursor.commit()
         self.bar_at(bar_index).unfocus_chord(beat_index)
 
     def get_chord_cursor_text(self, bar_index, beat_index):
@@ -61,6 +60,9 @@ class ChordCursorHandler(object):
     def chord_label_focused_by_mouse(self, bar, beat_index):
         bar_index = self.bar_layout.indexOf(bar)
         self.cursor.move_to(bar_index, beat_index)
+
+    def commit_chord(self):
+        self.cursor.commit()
 
     def delete_bar(self, bar_index):
         for widget in self.bars[bar_index].views():
@@ -129,6 +131,8 @@ class ScoreWindow(QWidget):
     def connect_bar(self, bar):
         bar.chord_label_focused_by_mouse.connect(
                 self.chord_handler.chord_label_focused_by_mouse)
+        bar.request_chord_label_commit.connect(
+                self.chord_handler.commit_chord)
 
     def create_bar(self, bar_index):
         b = ChordBarWindow(self.score[bar_index], self.inner_widget)
