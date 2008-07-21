@@ -83,6 +83,8 @@ class BeatWidget(QWidget):
         self.clicked(self.beat_index)
 
     def get_chord(self):
+        if self.chord_label.hasSelectedText():
+            return ''
         return str(self.chord_label.text())
 
     def append_to_chord(self, text):
