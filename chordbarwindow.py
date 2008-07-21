@@ -2,34 +2,58 @@ from PyQt4.QtCore import QRectF, QPointF, QSize, QPoint, QRect, Qt
 from PyQt4.QtGui import *
 import notify
 
-class ChordLabel(QLabel):
+class ChordLabel(QLineEdit):
     def __init__(self, beat_index, *args):
-        QLabel.__init__(self, *args)
+        QLineEdit.__init__(self, *args)
         self.beat_index = beat_index
         self.focused_by_mouse = notify.Signal()
         self.setAlignment(Qt.AlignCenter)
+        self.setFrame(False)
+
+    def sizeHint(self):
+        metrics = QFontMetrics(self.font())
+        size = metrics.size(Qt.TextSingleLine, self.text())
+        size.setWidth(size.width() + 10)
+        return size
 
     def select_all(self):
-        self.setFrameShape(QFrame.Box)
+        self.selectAll()
 
     def select_none(self):
-        self.setFrameShape(QFrame.NoFrame)
+        self.deselect()
 
     def append(self, text):
-        self.setText(self.text() + text)
-
-    def backspace(self):
-        self.setText(self.text()[:-1])
+        self.insert(text)
 
     def delete_text(self):
-        self.setText('')
+        self.del_()
+
+    def keyPressEvent(self, event):
+        event.ignore()
+
+    def keyReleaseEvent(self, event):
+        event.ignore()
+
+    def focusInEvent(self, event):
+        if event.reason() == Qt.MouseFocusReason:
+            self.select_all()
+            self.focused_by_mouse(self.beat_index)
+        QLineEdit.focusInEvent(self, event)
 
     def mousePressEvent(self, event):
         if self.hasFocus():
             event.ignore()
         else:
-            self.select_all()
-            self.focused_by_mouse(self.beat_index)
+            QLineEdit.mousePressEvent(self, event)
+
+    def mouseMoveEvent(self, event):
+        event.ignore()
+
+    def mouseReleaseEvent(self, event):
+        event.ignore()
+
+    def mouseDoubleClickEvent(self, event):
+        event.ignore()
 
 class BeatWidget(QWidget):
     def __init__(self, score_bar, beat_index, parent=None):
@@ -75,6 +99,7 @@ class BeatWidget(QWidget):
         self.commit()
 
     def commit(self):
+        self.chord_label.updateGeometry()
         self.score_bar.chords[self.beat_index] = str(self.chord_label.text())
 
 class ChordBarWindow(QFrame):
