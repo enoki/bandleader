@@ -39,6 +39,9 @@ class FlowLayout(QLayout):
     def index_of(self, row, column):
         return self.index_by_row_column[(row, column)]
 
+    def widget_by_index(self, index):
+        return self.itemAt(index).widget()
+
     def expandingDirections(self):
         return 0
 
