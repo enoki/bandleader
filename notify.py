@@ -8,4 +8,4 @@ class Signal(object):
         louie.connect(receiver, self.signal)
 
     def __call__(self, *args, **kwargs):
-        louie.send(self.signal, self, *args, **kwargs)
+        return louie.send(self.signal, self, *args, **kwargs)

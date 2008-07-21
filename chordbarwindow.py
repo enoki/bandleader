@@ -82,25 +82,27 @@ class BeatWidget(QWidget):
     def mousePressEvent(self, event):
         self.clicked(self.beat_index)
 
+    def get_chord(self):
+        return str(self.chord_label.text())
+
     def append_to_chord(self, text):
         self.chord_label.append(text)
-        self.commit()
+        self.adjust_size()
 
     def backspace_chord(self):
         self.chord_label.backspace()
-        self.commit()
+        self.adjust_size()
 
     def delete_chord(self):
         self.chord_label.delete_text()
-        self.commit()
+        self.adjust_size()
 
     def change_chord(self, text):
         self.chord_label.setText(text)
-        self.commit()
+        self.adjust_size()
 
-    def commit(self):
+    def adjust_size(self):
         self.chord_label.updateGeometry()
-        self.score_bar.chords[self.beat_index] = str(self.chord_label.text())
 
 class ChordBarWindow(QFrame):
     def __init__(self, score_bar, parent=None):
@@ -135,6 +137,9 @@ class ChordBarWindow(QFrame):
 
     def unfocus_chord(self, beat_index):
         self.beats[beat_index].unset_focus()
+
+    def get_chord(self, beat_index):
+        return self.beats[beat_index].get_chord()
 
     def append_to_chord(self, beat_index, text):
         self.beats[beat_index].append_to_chord(text)
