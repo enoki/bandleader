@@ -46,16 +46,16 @@ class ChordCursorHandler(object):
         self.bar_at(bar_index).unfocus_chord(beat_index)
 
     def append_chord_cursor_text(self, bar_index, beat_index, text):
-        pass #self.bar_at(bar_index).append_to_chord_label(beat_index, text)
+        self.bar_at(bar_index).append_to_chord(beat_index, text)
 
     def backspace_chord_cursor_text(self, bar_index, beat_index):
-        pass #self.bars[bar_index].backspace_in_chord_label(beat_index)
+        self.bar_at(bar_index).backspace_chord(beat_index)
 
     def delete_chord_cursor_text(self, bar_index, beat_index):
-        pass #self.bars[bar_index].delete_in_chord_label(beat_index)
+        self.bar_at(bar_index).delete_chord(beat_index)
 
     def change_chord_cursor_text(self, bar_index, beat_index, text):
-        pass #self.bars[bar_index].change_chord_label(beat_index, text)
+        self.bar_at(bar_index).change_chord(beat_index, text)
 
     def chord_label_focused_by_mouse(self, bar, beat_index):
         bar_index = self.bar_layout.indexOf(bar)
