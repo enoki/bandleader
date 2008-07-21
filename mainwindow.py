@@ -1,6 +1,7 @@
 from PyQt4.QtCore import Qt, SIGNAL, SLOT
 from PyQt4.QtGui import QTabWidget, QMainWindow, QAction
 from scorewindow import ScoreWindow
+from chordscorewindow import ScoreWindow as ChordScoreWindow
 
 class ScoreTabs(QTabWidget):
     def __init__(self, score, *args):
@@ -11,8 +12,10 @@ class ScoreTabs(QTabWidget):
 class MainWindow(QMainWindow):
     def __init__(self, score, *args):
         QMainWindow.__init__(self, *args)
-        central = ScoreTabs(score)
-        self.setCentralWidget(central)
+        tabs = ScoreTabs(score)
+        self.setCentralWidget(tabs)
+        self.score = score
+        self.tabs = tabs
         xtile_size = 24  # XXX
         self.resize(int((xtile_size*16+2)*2.5), self.height())
         self.setFocusPolicy(Qt.NoFocus)
@@ -20,6 +23,11 @@ class MainWindow(QMainWindow):
         self.create_menus()
 
     def create_actions(self):
+        newTabAction = QAction('New Tab', self)
+        newTabAction.setShortcut('Ctrl+Q')
+        self.connect(newTabAction, SIGNAL('triggered()'), self.new_tab)
+        self.newTabAction = newTabAction
+
         exitAction = QAction('E&xit', self)
         exitAction.setMenuRole(QAction.QuitRole)
         self.connect(exitAction, SIGNAL('triggered()'),
@@ -28,4 +36,8 @@ class MainWindow(QMainWindow):
 
     def create_menus(self):
         filemenu = self.menuBar().addMenu('&File')
+        filemenu.addAction(self.newTabAction)
         filemenu.addAction(self.exitAction)
+
+    def new_tab(self):
+        self.tabs.addTab(ChordScoreWindow(self.score, self), 'Untitled2')
