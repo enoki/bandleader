@@ -29,7 +29,6 @@ class ChordCursorHandler(object):
         cursor.request_backspace.connect(self.backspace_chord_cursor_text)
         cursor.request_delete.connect(self.delete_chord_cursor_text)
         cursor.request_change_text.connect(self.change_chord_cursor_text)
-        cursor.about_to_delete_bar.connect(self.prepare_delete_bar)
         cursor.bar_deleted.connect(self.delete_bar)
         cursor.bar_inserted.connect(self.insert_bar)
         cursor.bar_appended.connect(self.append_bar)
@@ -64,9 +63,6 @@ class ChordCursorHandler(object):
     def chord_label_focused_by_mouse(self, bar, beat_index):
         bar_index = self.bar_layout.indexOf(bar)
         self.cursor.move_to(bar_index, beat_index)
-
-    def prepare_delete_bar(self, bar_index):
-        pass
 
     def delete_bar(self, bar_index):
         for widget in self.bars[bar_index].views():
