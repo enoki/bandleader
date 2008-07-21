@@ -157,8 +157,8 @@ class ChordCursor(object):
     def commit(self):
         if len(self.current_text()) == 0:
             self.append_text('/')
-            self.score[self.bar_index].chords[self.beat_index] = (
-                    self.current_text())
+        self.score[self.bar_index].chords[self.beat_index] = (
+                self.current_text())
 
     def current_text(self):
         r = self.request_text(self.bar_index, self.beat_index)
