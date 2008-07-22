@@ -41,5 +41,6 @@ class MainWindow(QMainWindow):
         filemenu.addAction(self.exitAction)
 
     def new_tab(self):
+        self.keymode.commit()
         self.tabs.addTab(ChordScoreWindow(self.score, self.keymode, self),
                          'Untitled2')
