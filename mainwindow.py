@@ -1,6 +1,6 @@
 from __future__ import with_statement
 from PyQt4.QtCore import Qt, SIGNAL, SLOT
-from PyQt4.QtGui import QTabWidget, QMainWindow, QAction, QFileDialog
+from PyQt4.QtGui import QTabWidget, QMainWindow, QAction, QFileDialog, QApplication
 from scorewindow import ScoreWindow
 from chordscorewindow import ScoreWindow as ChordScoreWindow
 import cPickle as pickle
@@ -75,14 +75,14 @@ class MainWindow(QMainWindow):
         del self.score[:]
         self.score.extend(score)
 
-        #while self.tabs.count() > 0:
-        #    self.tabs.removeTab(0)
-        # TODO -- the mainwindow should not be associated with a score.
-        # each tab should be associated with one...
-        # this means each tab must be responsible for saving...
+        index = self.tabs.addTab(ScoreWindow(self.score, self.keymode, self),
+                                 'Untitled')
 
-        self.tabs.addTab(ScoreWindow(self.score, self.keymode, self),
-                         'Untitled')
+        # remove the existing tabs
+        self.tabs.setCurrentIndex(index)
+        QApplication.processEvents()
+        while self.tabs.count() > 1:
+            self.tabs.removeTab(0)
 
     def save_as_file(self):
         filename = str(QFileDialog.getSaveFileName(self,
