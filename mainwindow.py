@@ -29,6 +29,11 @@ class MainWindow(QMainWindow):
         self.connect(newTabAction, SIGNAL('triggered()'), self.new_tab)
         self.newTabAction = newTabAction
 
+        open_action = QAction('&Open...', self)
+        open_action.setShortcut('Ctrl+O')
+        self.connect(open_action, SIGNAL('triggered()'), self.open_file)
+        self.open_action = open_action
+
         exitAction = QAction('E&xit', self)
         exitAction.setMenuRole(QAction.QuitRole)
         self.connect(exitAction, SIGNAL('triggered()'),
@@ -38,9 +43,14 @@ class MainWindow(QMainWindow):
     def create_menus(self):
         filemenu = self.menuBar().addMenu('&File')
         filemenu.addAction(self.newTabAction)
+        filemenu.addAction(self.open_action)
+        filemenu.addSeparator()
         filemenu.addAction(self.exitAction)
 
     def new_tab(self):
         self.keymode.commit()
         self.tabs.addTab(ChordScoreWindow(self.score, self.keymode, self),
                          'Untitled2')
+
+    def open_file(self):
+        pass
