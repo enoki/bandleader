@@ -24,28 +24,28 @@ class MainWindow(QMainWindow):
         self.create_menus()
 
     def create_actions(self):
-        newTabAction = QAction('New Tab', self)
-        newTabAction.setShortcut('Ctrl+T')
-        self.connect(newTabAction, SIGNAL('triggered()'), self.new_tab)
-        self.newTabAction = newTabAction
+        new_tab_action = QAction('New Tab', self)
+        new_tab_action.setShortcut('Ctrl+T')
+        self.connect(new_tab_action, SIGNAL('triggered()'), self.new_tab)
+        self.new_tab_action = new_tab_action
 
         open_action = QAction('&Open...', self)
         open_action.setShortcut('Ctrl+O')
         self.connect(open_action, SIGNAL('triggered()'), self.open_file)
         self.open_action = open_action
 
-        exitAction = QAction('E&xit', self)
-        exitAction.setMenuRole(QAction.QuitRole)
-        self.connect(exitAction, SIGNAL('triggered()'),
+        exit_action = QAction('E&xit', self)
+        exit_action.setMenuRole(QAction.QuitRole)
+        self.connect(exit_action, SIGNAL('triggered()'),
                      self, SLOT('close()'))
-        self.exitAction = exitAction
+        self.exit_action = exit_action
 
     def create_menus(self):
         filemenu = self.menuBar().addMenu('&File')
-        filemenu.addAction(self.newTabAction)
+        filemenu.addAction(self.new_tab_action)
         filemenu.addAction(self.open_action)
         filemenu.addSeparator()
-        filemenu.addAction(self.exitAction)
+        filemenu.addAction(self.exit_action)
 
     def new_tab(self):
         self.keymode.commit()
