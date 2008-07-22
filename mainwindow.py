@@ -1,7 +1,9 @@
+from __future__ import with_statement
 from PyQt4.QtCore import Qt, SIGNAL, SLOT
-from PyQt4.QtGui import QTabWidget, QMainWindow, QAction
+from PyQt4.QtGui import QTabWidget, QMainWindow, QAction, QFileDialog
 from scorewindow import ScoreWindow
 from chordscorewindow import ScoreWindow as ChordScoreWindow
+import cPickle as pickle
 
 class ScoreTabs(QTabWidget):
     def __init__(self, score, keymode, *args):
@@ -34,6 +36,10 @@ class MainWindow(QMainWindow):
         self.connect(open_action, SIGNAL('triggered()'), self.open_file)
         self.open_action = open_action
 
+        save_as_action = QAction('Save &As...', self)
+        self.connect(save_as_action, SIGNAL('triggered()'), self.save_as_file)
+        self.save_as_action = save_as_action
+
         exit_action = QAction('E&xit', self)
         exit_action.setMenuRole(QAction.QuitRole)
         self.connect(exit_action, SIGNAL('triggered()'),
@@ -45,6 +51,8 @@ class MainWindow(QMainWindow):
         filemenu.addAction(self.new_tab_action)
         filemenu.addAction(self.open_action)
         filemenu.addSeparator()
+        filemenu.addAction(self.save_as_action)
+        filemenu.addSeparator()
         filemenu.addAction(self.exit_action)
 
     def new_tab(self):
@@ -53,4 +61,36 @@ class MainWindow(QMainWindow):
                          'Untitled2')
 
     def open_file(self):
-        pass
+        filename = str(QFileDialog.getOpenFileName(self,
+                            'Open', '',
+                            'Bandleader files (*.score)'))
+        if not filename:
+            return
+
+        score = None
+        with open(filename, mode='rb') as f:
+            score = pickle.load(f)
+
+        # replace the old score with the new one
+        del self.score[:]
+        self.score.extend(score)
+
+        #while self.tabs.count() > 0:
+        #    self.tabs.removeTab(0)
+        # TODO -- the mainwindow should not be associated with a score.
+        # each tab should be associated with one...
+        # this means each tab must be responsible for saving...
+
+        self.tabs.addTab(ScoreWindow(self.score, self.keymode, self),
+                         'Untitled')
+
+    def save_as_file(self):
+        filename = str(QFileDialog.getSaveFileName(self,
+                        'Save', '',
+                        'Bandleader files (*.score)'))
+        if not filename:
+            return
+        if filename.endswith('.score'):
+            self.keymode.commit()
+            with open(filename, mode='wb') as f:
+                pickle.dump(self.score, f)
