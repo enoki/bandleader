@@ -25,7 +25,7 @@ class MainWindow(QMainWindow):
 
     def create_actions(self):
         newTabAction = QAction('New Tab', self)
-        newTabAction.setShortcut('Ctrl+Q')
+        newTabAction.setShortcut('Ctrl+T')
         self.connect(newTabAction, SIGNAL('triggered()'), self.new_tab)
         self.newTabAction = newTabAction
 
