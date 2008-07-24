@@ -8,7 +8,7 @@ import cPickle as pickle
 class ScoreTabs(QTabWidget):
     def __init__(self, score, keymode, *args):
         QTabWidget.__init__(self, *args)
-        self.addTab(ScoreWindow(score, keymode, self), 'Untitled')
+        self.addTab(ScoreWindow(score, keymode, self), 'Leadsheet')
         self.setFocusPolicy(Qt.NoFocus)
 
 class MainWindow(QMainWindow):
@@ -22,6 +22,7 @@ class MainWindow(QMainWindow):
         xtile_size = 24  # XXX
         self.resize(int((xtile_size*16+2)*2.5), self.height())
         self.setFocusPolicy(Qt.NoFocus)
+        self.setWindowFilePath('Untitled')
         self.create_actions()
         self.create_menus()
 
@@ -58,7 +59,7 @@ class MainWindow(QMainWindow):
     def new_tab(self):
         self.keymode.commit()
         self.tabs.addTab(ChordScoreWindow(self.score, self.keymode, self),
-                         'Untitled2')
+                         'Chords')
 
     def open_file(self):
         filename = str(QFileDialog.getOpenFileName(self,
@@ -76,7 +77,7 @@ class MainWindow(QMainWindow):
         self.score.extend(score)
 
         index = self.tabs.addTab(ScoreWindow(self.score, self.keymode, self),
-                                 'Untitled')
+                                 'Leadsheet')
 
         # remove the existing tabs
         self.tabs.setCurrentIndex(index)
