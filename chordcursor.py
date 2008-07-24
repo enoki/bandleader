@@ -10,12 +10,6 @@ class ChordCursor(object):
         self.editing = False
         self.about_to_be_moved = notify.Signal()
         self.moved = notify.Signal()
-        self.about_to_delete_bar = notify.Signal()
-        self.bar_deleted = notify.Signal()
-        self.about_to_insert_bar = notify.Signal()
-        self.bar_inserted = notify.Signal()
-        self.bar_appended = notify.Signal()
-        self.text_changed = notify.Signal()
         self.request_text = notify.Signal()
         self.request_append = notify.Signal()
         self.request_backspace = notify.Signal()
@@ -169,9 +163,10 @@ class ChordCursor(object):
             self.editing = False
             if len(self.current_text()) == 0:
                 self.append_text('/')
-            self.score[self.bar_index].chords[self.beat_index] = (
-                    self.current_text())
-            self.text_changed(self.parent_id, self.bar_index, self.beat_index)
+            self.score.set_chord(self.parent_id,
+                                 self.bar_index,
+                                 self.beat_index,
+                                 self.current_text())
 
     def revert(self):
         if self.editing:
@@ -205,9 +200,7 @@ class ChordCursor(object):
 
     def delete_bar(self):
         if len(self.score) > 1:
-            self.about_to_delete_bar(self.bar_index)
-            del self.score[self.bar_index]
-            self.bar_deleted(self.bar_index)
+            self.score.delete_bar(self.bar_index)
 
             if self.bar_index == len(self.score):
                 self.bar_index -= 1
@@ -218,17 +211,14 @@ class ChordCursor(object):
         self.move(self.do_insert_bar)
 
     def do_insert_bar(self):
-        self.about_to_insert_bar(self.bar_index)
-        self.score.insert(self.bar_index, ScoreBar(4, 4, 4))
-        self.bar_inserted(self.bar_index)
+        self.score.insert_bar(self.bar_index, ScoreBar(4, 4, 4))
         self.beat_index = 0
 
     def append_bar(self):
         self.move(self.do_append_bar)
 
     def do_append_bar(self):
-        self.score.append(ScoreBar(4, 4, 4))
-        self.bar_appended()
+        self.score.append_bar(ScoreBar(4, 4, 4))
         self.bar_index = len(self.score)-1
         self.beat_index = 0
 
