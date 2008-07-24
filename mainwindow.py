@@ -80,10 +80,11 @@ class MainWindow(QMainWindow):
 
         # remove the existing tabs
         self.tabs.setCurrentIndex(index)
-        self.tabs.setTabText(self.tabs.currentIndex(), filename)
         QApplication.processEvents()
         while self.tabs.count() > 1:
             self.tabs.removeTab(0)
+
+        self.setWindowFilePath(filename)
 
     def save_as_file(self):
         filename = str(QFileDialog.getSaveFileName(self,
@@ -95,4 +96,4 @@ class MainWindow(QMainWindow):
             self.keymode.commit()
             with open(filename, mode='wb') as f:
                 pickle.dump(self.score, f)
-            self.tabs.setTabText(self.tabs.currentIndex(), filename)
+            self.setWindowFilePath(filename)
