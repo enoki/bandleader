@@ -32,6 +32,11 @@ class ChordCursor(object):
         move_function()
         self.moved(self.bar_index, self.beat_index)
 
+    def move_nowhere(self):
+        def do_nothing():
+            pass
+        self.move(do_nothing)
+
     def move_right(self):
         self.move(self.do_move_right)
 
@@ -168,6 +173,13 @@ class ChordCursor(object):
                     self.current_text())
             self.text_changed(self.parent_id, self.bar_index, self.beat_index)
 
+    def revert(self):
+        if self.editing:
+            self.editing = False
+            self.change_text(
+                self.score[self.bar_index].chords[self.beat_index])
+            self.move_nowhere()
+
     def current_text(self):
         r = self.request_text(self.bar_index, self.beat_index)
         for x, text in r:
@@ -185,7 +197,7 @@ class ChordCursor(object):
         self.request_delete(self.bar_index, self.beat_index)
 
     def change_text(self, text):
-        self.change_text_at(self.bar_index, self.beat_index)
+        self.change_text_at(text, self.bar_index, self.beat_index)
 
     def change_text_at(self, text, bar_index, beat_index):
         self.request_change_text(bar_index, beat_index, text)

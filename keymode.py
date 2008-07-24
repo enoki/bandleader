@@ -126,6 +126,8 @@ def handle_chord_input(cursor, key, key_modifiers):
         backspace()
     elif key == Qt.Key_Delete:
         cursor.delete_text()
+    elif key == Qt.Key_Escape:
+        cursor.revert()
     else:
         return False
     return True
