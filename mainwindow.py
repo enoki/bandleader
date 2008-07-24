@@ -58,8 +58,10 @@ class MainWindow(QMainWindow):
 
     def new_tab(self):
         self.keymode.commit()
-        self.tabs.addTab(ChordScoreWindow(self.score, self.keymode, self),
-                         'Chords')
+        index = self.tabs.addTab(
+                        ChordScoreWindow(self.score, self.keymode, self),
+                        'Chords')
+        self.tabs.setCurrentIndex(index)
 
     def open_file(self):
         filename = str(QFileDialog.getOpenFileName(self,
