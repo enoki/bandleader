@@ -174,9 +174,7 @@ class ChordMode(object):
         return True
 
     def setup(self):
-        def do_nothing():
-            pass
-        self.cursor.move(do_nothing)
+        self.cursor.move_nowhere()
 
     def migrate_from(self, mode):
         if hasattr(mode, 'cursor'):
