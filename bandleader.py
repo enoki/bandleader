@@ -7,6 +7,7 @@ import sys
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    app.setApplicationName('Bandleader')
 
     score = Score()
     score.add_bars(4, 4, 4, count=6)
