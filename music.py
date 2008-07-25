@@ -63,7 +63,7 @@ class Score(list):
         self.bar_inserted(bar_index)
 
     def append_bar(self, bar):
-        self.score.append(bar)
+        self.append(bar)
         self.bar_appended()
 
     def set_chord(self, parent_id, bar_index, beat_index, text):
