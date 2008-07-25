@@ -29,6 +29,10 @@ class WhitePianoKey(QGraphicsRectItem):
 
     def mousePressEvent(self, event):
         self.on_mouse_press(event, self.index)
+        self.setBrush(QBrush(QColor('lightblue')))
+
+    def mouseReleaseEvent(self, event):
+        self.setBrush(QBrush(QColor('white')))
 
 class BlackPianoKey(QGraphicsRectItem):
     def __init__(self, i1, i2, parent=None):
@@ -39,6 +43,10 @@ class BlackPianoKey(QGraphicsRectItem):
 
     def mousePressEvent(self, event):
         self.on_mouse_press(event, self.index)
+        self.setBrush(QBrush(QColor('gray')))
+
+    def mouseReleaseEvent(self, event):
+        self.setBrush(QBrush(QColor('black')))
 
 class PianoScene(QGraphicsScene):
     def __init__(self):
