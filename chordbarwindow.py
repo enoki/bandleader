@@ -61,6 +61,9 @@ class ChordLabel(QLineEdit):
     def mouseDoubleClickEvent(self, event):
         event.ignore()
 
+    def contextMenuEvent(self, event):
+        event.ignore()
+
 class BeatWidget(QWidget):
     def __init__(self, score_bar, beat_index, parent=None):
         QWidget.__init__(self, parent)

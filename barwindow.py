@@ -193,6 +193,9 @@ class ChordLabel(QGraphicsTextItem):
     def mouseDoubleClickEvent(self, event):
         event.ignore()
 
+    def contextMenuEvent(self, event):
+        event.ignore()
+
 class BarScene(QGraphicsScene):
     def __init__(self, score_bar, bar_index):
         QGraphicsScene.__init__(self)
