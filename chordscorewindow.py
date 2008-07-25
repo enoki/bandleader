@@ -11,6 +11,10 @@ def set_background(widget, color):
     palette.setColor(QPalette.Window, color)
     widget.setPalette(palette)
 
+class DumbScrollArea(QScrollArea):
+    def keyPressEvent(self, event):
+        event.ignore()
+
 class ChordCursorHandler(object):
     def __init__(self):
         pass
@@ -90,7 +94,7 @@ class ScoreWindow(QWidget):
             b = self.create_bar(i)
             bar_layout.addWidget(b)
 
-        scroller = QScrollArea()
+        scroller = DumbScrollArea()
         scroller.setWidget(inner_widget)
         scroller.setWidgetResizable(True)
         scroller.setFocusPolicy(Qt.NoFocus)
