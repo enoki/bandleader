@@ -42,8 +42,8 @@ class ChordLabel(QLineEdit):
         QLineEdit.focusInEvent(self, event)
 
     def focusOutEvent(self, event):
-        self.select_all()
         self.focused_out(self.beat_index)
+        self.select_all()
         QLineEdit.focusOutEvent(self, event)
 
     def mousePressEvent(self, event):

@@ -1,3 +1,5 @@
+import notify
+
 class ScoreBar(object):
     def __init__(self, beats_per_bar, bar_value, divisions_per_beat):
         self.compute(beats_per_bar, bar_value, divisions_per_beat)
@@ -66,4 +68,4 @@ class Score(list):
 
     def set_chord(self, parent_id, bar_index, beat_index, text):
         self[bar_index].chords[beat_index] = text
-        self.text_changed(parent_id, bar_index, beat_index)
+        self.chord_text_changed(parent_id, bar_index, beat_index)
