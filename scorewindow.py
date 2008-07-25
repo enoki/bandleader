@@ -2,6 +2,8 @@ from PyQt4.QtCore import Qt
 from PyQt4.QtGui import *
 from barwindow import BarWindow, BarScene
 from flowlayout import FlowLayout
+from chordcursor import ChordCursor
+from keymode import KeyMode
 
 def set_background(widget, color):
     palette = widget.palette()
@@ -9,14 +11,15 @@ def set_background(widget, color):
     widget.setPalette(palette)
 
 class ScoreWindow(QWidget):
-    def __init__(self, score, keymode, *args):
+    def __init__(self, score, *args):
         QWidget.__init__(self, *args)
         self.score = score
         self.bars = []
-        self.keymode = keymode
-        self.chord_cursor = self.keymode.chord_cursor
+        self.chord_cursor = ChordCursor(score)
+        self.keymode = KeyMode(self.chord_cursor)
         self.create_controls(score)
         self.connect_cursors(score)
+        self.connect_score(score)
 
     def create_controls(self, score):
         inner_widget = QWidget(self)
@@ -61,10 +64,12 @@ class ScoreWindow(QWidget):
         cursor.request_backspace.connect(self.backspace_chord_cursor_text)
         cursor.request_delete.connect(self.delete_chord_cursor_text)
         cursor.request_change_text.connect(self.change_chord_cursor_text)
-        cursor.bar_deleted.connect(self.delete_bar)
-        cursor.bar_inserted.connect(self.insert_bar)
-        cursor.bar_appended.connect(self.append_bar)
-        cursor.text_changed.connect(self.chord_cursor_text_changed)
+
+    def connect_score(self, score):
+        score.bar_deleted.connect(self.delete_bar)
+        score.bar_inserted.connect(self.insert_bar)
+        score.bar_appended.connect(self.append_bar)
+        score.chord_text_changed.connect(self.chord_cursor_text_changed)
 
     def move_chord_cursor(self, bar_index, beat_index):
         self.bars[bar_index].focus_chord_label(beat_index)
@@ -147,13 +152,9 @@ class ScoreWindow(QWidget):
 if __name__ == '__main__':
     import sys
     from music import Score
-    from chordcursor import ChordCursor
-    from keymode import KeyMode
     app = QApplication(sys.argv)
     score = Score()
     score.add_bars(4, 4, 4, 4)
-    chord_cursor = ChordCursor(score)
-    keymode = KeyMode(chord_cursor)
-    window = ScoreWindow(score, keymode)
+    window = ScoreWindow(score)
     window.show()
     app.exec_()
