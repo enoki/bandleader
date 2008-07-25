@@ -22,6 +22,7 @@ class MainWindow(QMainWindow):
         self.resize(int((xtile_size*16+2)*2.5), self.height())
         self.setFocusPolicy(Qt.NoFocus)
         self.setWindowFilePath('Untitled')
+        self.setWindowModified(False)
         self.create_actions()
         self.create_menus()
 
@@ -87,6 +88,7 @@ class MainWindow(QMainWindow):
             self.tabs.removeTab(0)
 
         self.setWindowFilePath(filename)
+        self.setWindowModified(False)
 
     def save_as_file(self):
         filename = str(QFileDialog.getSaveFileName(self,
@@ -99,6 +101,7 @@ class MainWindow(QMainWindow):
             with open(filename, mode='wb') as f:
                 pickle.dump(self.score, f)
             self.setWindowFilePath(filename)
+            self.setWindowModified(False)
 
 if __name__ == '__main__':
     from PyQt4.QtGui import QApplication
