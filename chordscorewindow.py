@@ -63,30 +63,6 @@ class ChordCursorHandler(object):
     def commit_chord(self):
         self.cursor.commit()
 
-    def delete_bar(self, bar_index):
-        for widget in self.bars[bar_index].views():
-            self.bar_layout.removeWidget(widget)
-            widget.deleteLater()
-
-        del self.bars[bar_index]
-
-        for i in xrange(bar_index, len(self.score)):
-            self.bars[i].set_bar_index(i)
-
-    def insert_bar(self, bar_index):
-        b = self.create_bar(bar_index)
-        self.bar_layout.insert_widget(bar_index, b)
-        b.show()
-
-        for i in xrange(bar_index, len(self.score)):
-            self.bars[i].set_bar_index(i)
-
-    def append_bar(self):
-        b = self.create_bar(len(self.score)-1)
-        self.bar_layout.addWidget(b)
-        b.show()
-        QApplication.processEvents()
-
     def chord_text_changed(self, parent_id, bar_index, beat_index):
         if id(self) != parent_id:
             self.bar_at(bar_index).update_chord(beat_index)
@@ -125,9 +101,9 @@ class ScoreWindow(QWidget):
 
     def connect_score(self, score):
         chord_handler = self.chord_handler
-        score.bar_deleted.connect(chord_handler.delete_bar)
-        score.bar_inserted.connect(chord_handler.insert_bar)
-        score.bar_appended.connect(chord_handler.append_bar)
+        score.bar_deleted.connect(self.delete_bar)
+        score.bar_inserted.connect(self.insert_bar)
+        score.bar_appended.connect(self.append_bar)
         score.chord_text_changed.connect(chord_handler.chord_text_changed)
 
     def connect_cursors(self, score):
@@ -149,6 +125,22 @@ class ScoreWindow(QWidget):
         b = ChordBarWindow(self.score[bar_index], self.inner_widget)
         self.connect_bar(b)
         return b
+
+    def delete_bar(self, bar_index):
+        widget = self.bar_layout.widget_by_index(bar_index)
+        self.bar_layout.removeWidget(widget)
+        widget.deleteLater()
+
+    def insert_bar(self, bar_index):
+        b = self.create_bar(bar_index)
+        self.bar_layout.insert_widget(bar_index, b)
+        b.show()
+
+    def append_bar(self):
+        b = self.create_bar(len(self.score)-1)
+        self.bar_layout.addWidget(b)
+        b.show()
+        QApplication.processEvents()
 
     def showEvent(self, event):
         self.chord_cursor.connect(self.bar_layout.row_column_of,
