@@ -6,18 +6,17 @@ from chordscorewindow import ScoreWindow as ChordScoreWindow
 import cPickle as pickle
 
 class ScoreTabs(QTabWidget):
-    def __init__(self, score, keymode, *args):
+    def __init__(self, score, *args):
         QTabWidget.__init__(self, *args)
-        self.addTab(ScoreWindow(score, keymode, self), 'Leadsheet')
+        self.addTab(ScoreWindow(score, self), 'Leadsheet')
         self.setFocusPolicy(Qt.NoFocus)
 
 class MainWindow(QMainWindow):
-    def __init__(self, score, keymode, *args):
+    def __init__(self, score, *args):
         QMainWindow.__init__(self, *args)
-        tabs = ScoreTabs(score, keymode)
+        tabs = ScoreTabs(score)
         self.setCentralWidget(tabs)
         self.score = score
-        self.keymode = keymode
         self.tabs = tabs
         xtile_size = 24  # XXX
         self.resize(int((xtile_size*16+2)*2.5), self.height())
@@ -57,9 +56,9 @@ class MainWindow(QMainWindow):
         filemenu.addAction(self.exit_action)
 
     def new_tab(self):
-        self.keymode.commit()
+        self.tabs.currentWidget().keymode.commit()
         index = self.tabs.addTab(
-                        ChordScoreWindow(self.score, self.keymode, self),
+                        ChordScoreWindow(self.score, self),
                         'Chords')
         self.tabs.setCurrentIndex(index)
 
@@ -78,7 +77,7 @@ class MainWindow(QMainWindow):
         del self.score[:]
         self.score.extend(score)
 
-        index = self.tabs.addTab(ScoreWindow(self.score, self.keymode, self),
+        index = self.tabs.addTab(ScoreWindow(self.score, self),
                                  'Leadsheet')
 
         # remove the existing tabs
@@ -96,7 +95,18 @@ class MainWindow(QMainWindow):
         if not filename:
             return
         if filename.endswith('.score'):
-            self.keymode.commit()
+            self.tabs.currentWidget().keymode.commit()
             with open(filename, mode='wb') as f:
                 pickle.dump(self.score, f)
             self.setWindowFilePath(filename)
+
+if __name__ == '__main__':
+    from PyQt4.QtGui import QApplication
+    from music import Score
+    import sys
+    app = QApplication(sys.argv)
+    score = Score()
+    score.add_bars(4, 4, 4, count=6)
+    window = MainWindow(score)
+    window.show()
+    sys.exit(app.exec_())
