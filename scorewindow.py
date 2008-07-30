@@ -136,6 +136,10 @@ class ScoreWindow(QWidget):
         self.connect_bar(scene)
         return b
 
+    def toggle_beat_lines(self):
+        for bar in self.bars:
+            bar.toggle_beat_lines()
+
     def showEvent(self, event):
         self.setFocus()
         self.chord_cursor.connect(self.bar_layout.row_column_of,
@@ -145,6 +149,9 @@ class ScoreWindow(QWidget):
         QWidget.showEvent(self, event)
 
     def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Comma:
+            self.toggle_beat_lines()
+            return
         handled = self.keymode.keyPressEvent(event)
         if not handled:
             QWidget.keyPressEvent(self, event)

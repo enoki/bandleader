@@ -737,6 +737,10 @@ class BarScene(QGraphicsScene):
         self.bar_index = bar_index
         self.bar_number.setText(str(self.bar_index+1))
 
+    def toggle_beat_lines(self):
+        for item in self.items_with_tag('mbeatline'):
+            item.setVisible(not item.isVisible())
+
 class BarWindow(QGraphicsView):
     def __init__(self, *args):
         QGraphicsView.__init__(self, *args)
