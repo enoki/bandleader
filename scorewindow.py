@@ -4,6 +4,7 @@ from barwindow import BarWindow, BarScene
 from flowlayout import FlowLayout
 from chordcursor import ChordCursor
 from keymode import KeyMode
+from pianowindow import PianoScene, PianoWindow
 
 def set_background(widget, color):
     palette = widget.palette()
@@ -42,6 +43,7 @@ class ScoreWindow(QWidget):
 
         layout = QVBoxLayout(self)
         layout.addWidget(scroller)
+        self.layout = layout
 
     def connect_cursors(self, score):
         self.chord_cursor.connect(self.bar_layout.row_column_of,
@@ -140,6 +142,22 @@ class ScoreWindow(QWidget):
         for bar in self.bars:
             bar.toggle_beat_lines()
 
+    def show_piano(self):
+        if not hasattr(self, 'piano_scene'):
+            scene = PianoScene()
+            scene.note_pressed.connect(self.insert_piano_note)
+            self.piano_scene = scene
+            window = PianoWindow()
+            window.setScene(scene)
+            self.layout.addWidget(window)
+            window.show()
+            self.piano_window = window
+        else:
+            self.piano_window.setVisible(not self.piano_window.isVisible())
+
+    def insert_piano_note(self, index):
+        print 'note clicked at %d' % index
+
     def showEvent(self, event):
         self.setFocus()
         self.chord_cursor.connect(self.bar_layout.row_column_of,
@@ -151,6 +169,9 @@ class ScoreWindow(QWidget):
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Comma:
             self.toggle_beat_lines()
+            return
+        elif event.key() == Qt.Key_F8:
+            self.show_piano()
             return
         handled = self.keymode.keyPressEvent(event)
         if not handled:
