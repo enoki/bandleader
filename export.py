@@ -31,6 +31,14 @@ mma_durations = [
     '1',
 ]
 
+lilypond_notename = [
+    "_",
+    "e'''", "d'''", "c'''", "b''", "a''",
+    "g''", "f''", "e''", "d''", "c''", "b'", "a'",
+    "g'", "f'", "e'", "d'", "c'", "b", "a",
+    "g", "f"]
+
+
 def goo_to_lilypond(goo):
     lilypond = []
     for goo_note, goo_duration in goo:
