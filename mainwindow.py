@@ -32,6 +32,11 @@ class MainWindow(QMainWindow):
         self.connect(new_tab_action, SIGNAL('triggered()'), self.new_tab)
         self.new_tab_action = new_tab_action
 
+        close_tab_action = QAction('Close Tab', self)
+        close_tab_action.setShortcut('Ctrl+W')
+        self.connect(close_tab_action, SIGNAL('triggered()'), self.close_tab)
+        self.close_tab_action = close_tab_action
+
         open_action = QAction('&Open...', self)
         open_action.setShortcut('Ctrl+O')
         self.connect(open_action, SIGNAL('triggered()'), self.open_file)
@@ -51,17 +56,23 @@ class MainWindow(QMainWindow):
         filemenu = self.menuBar().addMenu('&File')
         filemenu.addAction(self.new_tab_action)
         filemenu.addAction(self.open_action)
+        filemenu.addAction(self.close_tab_action)
         filemenu.addSeparator()
         filemenu.addAction(self.save_as_action)
         filemenu.addSeparator()
         filemenu.addAction(self.exit_action)
 
     def new_tab(self):
-        self.tabs.currentWidget().keymode.commit()
+        if self.tabs.currentWidget():
+            self.tabs.currentWidget().keymode.commit()
         index = self.tabs.addTab(
                         ChordScoreWindow(self.score, self),
                         'Chords')
         self.tabs.setCurrentIndex(index)
+
+    def close_tab(self):
+        self.tabs.currentWidget().keymode.commit()
+        self.tabs.removeTab(self.tabs.currentIndex())
 
     def open_file(self):
         filename = str(QFileDialog.getOpenFileName(self,
