@@ -1,8 +1,9 @@
 from __future__ import with_statement
-from PyQt4.QtCore import Qt, SIGNAL, SLOT
+from PyQt4.QtCore import QString, Qt, SIGNAL, SLOT
 from PyQt4.QtGui import QTabWidget, QMainWindow, QAction, QFileDialog, QApplication
 from scorewindow import ScoreWindow
 from chordscorewindow import ScoreWindow as ChordScoreWindow
+import export
 import cPickle as pickle
 
 class ScoreTabs(QTabWidget):
@@ -102,15 +103,31 @@ class MainWindow(QMainWindow):
         self.setWindowModified(False)
 
     def save_as_file(self):
+        filters = [
+            'Bandleader files (*.score)',
+            'MMA files (*.mma)',
+            'Lilypond files (*.ly)',
+        ]
+        selected = QString()
         filename = str(QFileDialog.getSaveFileName(self,
                         'Save', '',
-                        'Bandleader files (*.score)'))
+                        ';;'.join(filters), selected))
         if not filename:
             return
-        if filename.endswith('.score'):
+        print selected
+        if selected == filters[0]:
             self.tabs.currentWidget().keymode.commit()
-            with open(filename, mode='wb') as f:
-                pickle.dump(self.score, f)
+            export.export_bandleader(filename, self.score)
+            self.setWindowFilePath(filename)
+            self.setWindowModified(False)
+        elif selected == filters[1]:
+            self.tabs.currentWidget().keymode.commit()
+            export.export_mma(filename, self.score)
+            self.setWindowFilePath(filename)
+            self.setWindowModified(False)
+        elif selected == filters[2]:
+            self.tabs.currentWidget().keymode.commit()
+            export.export_lilypond(filename, self.score)
             self.setWindowFilePath(filename)
             self.setWindowModified(False)
 

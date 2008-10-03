@@ -1,5 +1,58 @@
 from __future__ import with_statement
 from goo import *
+import cPickle as pickle
+
+mma_notetuples = [
+    ('r', ''),
+    ('e', '+'), ('d', '+'), ('c', '+'), ('b', '+'), ('a', '+'),
+    ('g', '+'), ('f', '+'), ('e', '+'), ('d', '+'), ('c', '+'),
+    ('b', ''), ('a', ''), ('g', ''), ('f', ''), ('e', ''),
+    ('d', ''), ('c', ''),
+    ('b', '-'), ('a', '-'), ('g', '-'), ('f', '-')
+]
+
+mma_durations = [
+    '',
+    '16',
+    '8',
+    '8.',
+    '4',
+    '16+4',
+    '4.',
+    '16+8+4',
+    '2',
+    '16+2',
+    '8+2',
+    '16+8+2',
+    '2.',
+    '16+2.',
+    '4.+2',
+    '16+8+2.',
+    '1',
+]
+
+
+def score_bar_to_notes(score_bar):
+    """
+    Returns a list of (index, row_number, duration) tuples from the score bar.
+    """
+    entered = score_bar.entered
+    note_of = score_bar.note_of
+    bar_divisions = score_bar.bar_divisions
+    i = 0
+    while i < bar_divisions:
+        if entered[i] > 0:
+            index = i
+            note = note_of[i]
+            i += 1
+            duration = 1
+            while i < bar_divisions and entered[i] == 0:
+                duration += 1
+                i += 1
+            yield (index, note, duration)
+        else:
+            i += 1
+
 
 def goo_to_lilypond(goo):
     lilypond = []
@@ -119,3 +172,7 @@ def export_lilypond(filename, score):
 def export_mma(filename, score):
     with open(filename, mode='w') as f:
         f.write(score_to_mma(score))
+
+def export_bandleader(filename, score):
+    with open(filename, mode='wb') as f:
+        pickle.dump(score, f)

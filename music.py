@@ -8,6 +8,8 @@ class ScoreBar(object):
         self.chords = ['/' for x in xrange(self.beats_per_bar)]
         self.lyrics = ['']
         self.entered[0] = 1
+        self.tie_first = False
+        self.tie_last = False
 
     def compute(self, beats_per_bar, bar_value, divisions_per_beat):
         self.bar_divisions = beats_per_bar * divisions_per_beat
