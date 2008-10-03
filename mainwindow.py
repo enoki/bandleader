@@ -27,12 +27,12 @@ class MainWindow(QMainWindow):
         self.create_menus()
 
     def create_actions(self):
-        new_tab_action = QAction('New Tab', self)
+        new_tab_action = QAction('&New Tab', self)
         new_tab_action.setShortcut('Ctrl+T')
         self.connect(new_tab_action, SIGNAL('triggered()'), self.new_tab)
         self.new_tab_action = new_tab_action
 
-        close_tab_action = QAction('Close Tab', self)
+        close_tab_action = QAction('&Close Tab', self)
         close_tab_action.setShortcut('Ctrl+W')
         self.connect(close_tab_action, SIGNAL('triggered()'), self.close_tab)
         self.close_tab_action = close_tab_action
