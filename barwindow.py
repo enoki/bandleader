@@ -513,7 +513,7 @@ class BarScene(QGraphicsScene):
         x, y, a, a = bbox_of(bar_divisions // 2 - 1, row-1)
         a, y2, a, a = bbox_of(0, row)
         x += 3
-        y = (y + y2) / 2
+        y = (y + y2) // 2
         width = 10
         height = 3
         pen = QPen()
@@ -567,9 +567,9 @@ class BarScene(QGraphicsScene):
     def render_note_image(self, col, row, image, dotted, stemmed, notetype,
                           beamtype, note_duration):
         x, y, x2, y2 = bbox_of(col, row)
-        #x = (x + x2 - image.width()) / 2
-        x + image.width() / 2
-        y = (y + y2 - image.height()) / 2
+        #x = (x + x2 - image.width()) // 2
+        x + image.width() // 2
+        y = (y + y2 - image.height()) // 2
         item = self.add_pixmap(x, y, image, tags=('note', 'noteimage'))
         if stemmed:
             self.stem_info_of[col] = StemInfo(True, row, id(item),
@@ -667,9 +667,9 @@ class BarScene(QGraphicsScene):
 
     def render_tie(self, col1, row1, col2, row2):
         x, y, x2, d = bbox_of(col1, row1)
-        x = (x + x2) / 2
+        x = (x + x2) // 2
         a, b, x2, y2 = bbox_of(col2, row2)
-        x2 = (a + x2) / 2
+        x2 = (a + x2) // 2
         extent = 0
         if row1 < 11:
             y -= 11
@@ -680,7 +680,7 @@ class BarScene(QGraphicsScene):
             y2 += 12
             extent = -180
         path = QPainterPath()
-        path.moveTo(x2, (y+y2)/2)
+        path.moveTo(x2, (y+y2)//2)
         path.arcTo(x, y, abs(x2-x), abs(y2-y), 0, extent)
         item = QGraphicsPathItem(path)
         self.add_item(item, tags=('note', 'noteimage'))
