@@ -31,29 +31,6 @@ mma_durations = [
     '1',
 ]
 
-
-def score_bar_to_notes(score_bar):
-    """
-    Returns a list of (index, row_number, duration) tuples from the score bar.
-    """
-    entered = score_bar.entered
-    note_of = score_bar.note_of
-    bar_divisions = score_bar.bar_divisions
-    i = 0
-    while i < bar_divisions:
-        if entered[i] > 0:
-            index = i
-            note = note_of[i]
-            i += 1
-            duration = 1
-            while i < bar_divisions and entered[i] == 0:
-                duration += 1
-                i += 1
-            yield (index, note, duration)
-        else:
-            i += 1
-
-
 def goo_to_lilypond(goo):
     lilypond = []
     for goo_note, goo_duration in goo:
@@ -151,7 +128,7 @@ def score_to_mma(score):
         line.append('{')
         if bar.tie_first:
             line.append('~')
-        for note_index, note_row, note_duration in score_bar_to_notes(bar):
+        for note_index, note_row, note_duration in each_score_bar_coord(bar):
             note, octave = mma_notetuples[note_row]
             duration = mma_durations[note_duration]
             line.append("%s%s%s;" % (duration, note, octave))
