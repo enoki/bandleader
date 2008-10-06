@@ -120,22 +120,19 @@ class MainWindow(QMainWindow):
                         ';;'.join(filters), selected))
         if not filename:
             return
-        print selected
         if selected == filters[0]:
-            self.commit_current_tab()
-            export.export_bandleader(filename, self.score)
-            self.setWindowFilePath(filename)
-            self.setWindowModified(False)
+            self.save_tab(filename, export.export_bandleader)
         elif selected == filters[1]:
-            self.commit_current_tab()
-            export.export_mma(filename, self.score)
-            self.setWindowFilePath(filename)
-            self.setWindowModified(False)
+            self.save_tab(filename, export.export_mma)
         elif selected == filters[2]:
-            self.commit_current_tab()
-            export.export_lilypond(filename, self.score)
-            self.setWindowFilePath(filename)
-            self.setWindowModified(False)
+            self.save_tab(filename, export.export_lilypond)
+
+    def save_tab(self, filename, do_save):
+        self.commit_current_tab()
+        do_save(filename, self.score)
+        export.export_lilypond(filename, self.score)
+        self.setWindowFilePath(filename)
+        self.setWindowModified(False)
 
 if __name__ == '__main__':
     from PyQt4.QtGui import QApplication
