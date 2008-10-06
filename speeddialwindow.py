@@ -2,11 +2,13 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import SIGNAL
 from scorewindow import ScoreWindow
 from chordscorewindow import ScoreWindow as ChordScoreWindow
+import notify
 
 class SpeedDialWindow(QStackedWidget):
     def __init__(self, score, *args):
         QWidget.__init__(self, *args)
         self.score = score
+        self.title_changed = notify.Signal()
         self.create_controls()
 
     def create_controls(self):
@@ -31,21 +33,22 @@ class SpeedDialWindow(QStackedWidget):
 
     def new_chord(self):
         """ Opens a new chord window """
-        self.new_window(ChordScoreWindow(self.score, self))
+        self.new_window(ChordScoreWindow(self.score, self), 'Chords')
 
     def new_notation(self):
         """ Opens a new notation window """
-        self.new_window(ScoreWindow(self.score, self))
+        self.new_window(ScoreWindow(self.score, self), 'Leadsheet')
 
     def new_lyrics(self):
         """ Opens a new lyrics window """
         pass
 
-    def new_window(self, window):
+    def new_window(self, window, title):
         self.keymode = window.keymode
         self.addWidget(window)
         self.setCurrentWidget(window)
         self.removeWidget(self.dial)
+        self.title_changed(title)
 
 if __name__ == '__main__':
     from PyQt4.QtGui import QApplication

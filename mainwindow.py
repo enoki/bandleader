@@ -70,11 +70,11 @@ class MainWindow(QMainWindow):
 
     def new_tab(self):
         self.commit_current_tab()
-        index = self.tabs.addTab(
-                SpeedDialWindow(self.score, self),
-                'Blank')
-                        #ChordScoreWindow(self.score, self),
-                        #'Chords')
+        tab = SpeedDialWindow(self.score, self)
+        index = self.tabs.addTab(tab, 'Blank')
+        def change_tab_title(title):
+            self.tabs.setTabText(index, title)
+        tab.title_changed.connect_lambda(change_tab_title)
         self.tabs.setCurrentIndex(index)
 
     def close_tab(self):
