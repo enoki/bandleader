@@ -3,7 +3,7 @@ from PyQt4.QtCore import SIGNAL
 from scorewindow import ScoreWindow
 from chordscorewindow import ScoreWindow as ChordScoreWindow
 
-class SpeedDialWindow(QWidget):
+class SpeedDialWindow(QStackedWidget):
     def __init__(self, score, *args):
         QWidget.__init__(self, *args)
         self.score = score
@@ -16,14 +16,18 @@ class SpeedDialWindow(QWidget):
 
         lyrics_button.setEnabled(False)
 
-        self.connect(chord_button, SIGNAL('triggered()'), self.new_chord)
-        self.connect(notation_button, SIGNAL('triggered()'), self.new_notation)
-        self.connect(lyrics_button, SIGNAL('triggered()'), self.new_lyrics)
+        self.connect(chord_button, SIGNAL('clicked()'), self.new_chord)
+        self.connect(notation_button, SIGNAL('clicked()'), self.new_notation)
+        self.connect(lyrics_button, SIGNAL('clicked()'), self.new_lyrics)
 
-        layout = QGridLayout(self)
+        dial = QWidget()
+        layout = QGridLayout(dial)
         layout.addWidget(chord_button, 1, 0)
         layout.addWidget(notation_button, 0, 1)
         layout.addWidget(lyrics_button, 1, 2)
+        self.dial = dial
+
+        self.addWidget(dial)
 
     def new_chord(self):
         """ Opens a new chord window """
@@ -38,9 +42,8 @@ class SpeedDialWindow(QWidget):
         pass
 
     def new_window(self, window):
-        layout = QHBoxLayout()
-        layout.addWidget(window)
-        self.setLayout(layout)
+        self.addWidget(window)
+        self.setCurrentWidget(window)
 
 if __name__ == '__main__':
     from PyQt4.QtGui import QApplication
