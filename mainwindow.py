@@ -114,18 +114,19 @@ class MainWindow(QMainWindow):
             'MMA files (*.mma)',
             'Lilypond files (*.ly)',
         ]
+        exporters = [
+            export.export_bandleader,
+            export.export_mma,
+            export.export_lilypond,
+        ]
         selected = QString()
         filename = str(QFileDialog.getSaveFileName(self,
                         'Save', '',
                         ';;'.join(filters), selected))
         if not filename:
             return
-        if selected == filters[0]:
-            self.save_tab(filename, export.export_bandleader)
-        elif selected == filters[1]:
-            self.save_tab(filename, export.export_mma)
-        elif selected == filters[2]:
-            self.save_tab(filename, export.export_lilypond)
+        selected_index = filters.index(selected)
+        self.save_tab(filename, exporters[selected_index])
 
     def save_tab(self, filename, do_save):
         self.commit_current_tab()
