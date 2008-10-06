@@ -64,7 +64,7 @@ class MainWindow(QMainWindow):
         filemenu.addAction(self.exit_action)
 
     def new_tab(self):
-        if self.tabs.currentWidget():
+        if hasattr(self.tabs.currentWidget(), "keymode"):
             self.tabs.currentWidget().keymode.commit()
         index = self.tabs.addTab(
                         ChordScoreWindow(self.score, self),
@@ -72,7 +72,8 @@ class MainWindow(QMainWindow):
         self.tabs.setCurrentIndex(index)
 
     def close_tab(self):
-        self.tabs.currentWidget().keymode.commit()
+        if hasattr(self.tabs.currentWidget(), "keymode"):
+            self.tabs.currentWidget().keymode.commit()
         self.tabs.removeTab(self.tabs.currentIndex())
 
     def open_file(self):
