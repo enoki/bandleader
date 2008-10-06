@@ -42,8 +42,10 @@ class SpeedDialWindow(QStackedWidget):
         pass
 
     def new_window(self, window):
+        self.keymode = window.keymode
         self.addWidget(window)
         self.setCurrentWidget(window)
+        self.removeWidget(self.dial)
 
 if __name__ == '__main__':
     from PyQt4.QtGui import QApplication
