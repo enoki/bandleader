@@ -125,13 +125,11 @@ class MainWindow(QMainWindow):
                         ';;'.join(filters), selected))
         if not filename:
             return
-        selected_index = filters.index(selected)
-        self.save_tab(filename, exporters[selected_index])
+        self.save_tab_to(filename, exporters[filters.index(selected)])
 
-    def save_tab(self, filename, do_save):
+    def save_tab_to(self, filename, do_save):
         self.commit_current_tab()
         do_save(filename, self.score)
-        export.export_lilypond(filename, self.score)
         self.setWindowFilePath(filename)
         self.setWindowModified(False)
 
