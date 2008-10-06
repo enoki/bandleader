@@ -3,6 +3,7 @@ from PyQt4.QtCore import QString, Qt, SIGNAL, SLOT
 from PyQt4.QtGui import QTabWidget, QMainWindow, QAction, QFileDialog, QApplication
 from scorewindow import ScoreWindow
 from chordscorewindow import ScoreWindow as ChordScoreWindow
+from speeddialwindow import SpeedDialWindow
 import export
 import cPickle as pickle
 
@@ -63,17 +64,21 @@ class MainWindow(QMainWindow):
         filemenu.addSeparator()
         filemenu.addAction(self.exit_action)
 
-    def new_tab(self):
+    def commit_current_tab(self):
         if hasattr(self.tabs.currentWidget(), "keymode"):
             self.tabs.currentWidget().keymode.commit()
+
+    def new_tab(self):
+        self.commit_current_tab()
         index = self.tabs.addTab(
-                        ChordScoreWindow(self.score, self),
-                        'Chords')
+                SpeedDialWindow(self.score, self),
+                'Blank')
+                        #ChordScoreWindow(self.score, self),
+                        #'Chords')
         self.tabs.setCurrentIndex(index)
 
     def close_tab(self):
-        if hasattr(self.tabs.currentWidget(), "keymode"):
-            self.tabs.currentWidget().keymode.commit()
+        self.commit_current_tab()
         self.tabs.removeTab(self.tabs.currentIndex())
 
     def open_file(self):
@@ -117,17 +122,17 @@ class MainWindow(QMainWindow):
             return
         print selected
         if selected == filters[0]:
-            self.tabs.currentWidget().keymode.commit()
+            self.commit_current_tab()
             export.export_bandleader(filename, self.score)
             self.setWindowFilePath(filename)
             self.setWindowModified(False)
         elif selected == filters[1]:
-            self.tabs.currentWidget().keymode.commit()
+            self.commit_current_tab()
             export.export_mma(filename, self.score)
             self.setWindowFilePath(filename)
             self.setWindowModified(False)
         elif selected == filters[2]:
-            self.tabs.currentWidget().keymode.commit()
+            self.commit_current_tab()
             export.export_lilypond(filename, self.score)
             self.setWindowFilePath(filename)
             self.setWindowModified(False)
