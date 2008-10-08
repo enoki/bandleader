@@ -39,8 +39,13 @@ class LyricsWindow(QWidget):
 
 if __name__ == '__main__':
     import sys
+    from music import Score
     app = QApplication(sys.argv)
-    window = LyricsWindow()
+    score = Score()
+    score.add_bars(4, 4, 4, count=6)
+    window = LyricsWindow(score)
     window.show()
     app.exec_()
-    print window.text()
+    window.keymode.commit()
+    for bar in score:
+        print bar.lyrics[0]
