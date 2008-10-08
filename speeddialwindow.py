@@ -2,6 +2,7 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import SIGNAL
 from scorewindow import ScoreWindow
 from chordscorewindow import ScoreWindow as ChordScoreWindow
+from lyricswindow import LyricsWindow
 import notify
 
 class SpeedDialWindow(QStackedWidget):
@@ -15,8 +16,6 @@ class SpeedDialWindow(QStackedWidget):
         chord_button = QPushButton("&Chords")
         notation_button = QPushButton("&Leadsheet")
         lyrics_button = QPushButton("L&yrics")
-
-        lyrics_button.setEnabled(False)
 
         self.connect(chord_button, SIGNAL('clicked()'), self.new_chord)
         self.connect(notation_button, SIGNAL('clicked()'), self.new_notation)
@@ -41,7 +40,7 @@ class SpeedDialWindow(QStackedWidget):
 
     def new_lyrics(self):
         """ Opens a new lyrics window """
-        pass
+        self.new_window(LyricsWindow(self.score, self), 'Lyrics')
 
     def new_window(self, window, title):
         self.keymode = window.keymode
