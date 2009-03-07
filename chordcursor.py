@@ -189,6 +189,7 @@ class ChordCursor(object):
         self.request_backspace(self.bar_index, self.beat_index)
 
     def delete_text(self):
+        self.editing = True
         self.request_delete(self.bar_index, self.beat_index)
 
     def change_text(self, text):
