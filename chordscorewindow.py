@@ -171,6 +171,7 @@ class ScoreWindow(QWidget):
 
 if __name__ == '__main__':
     import sys
+    import export
     from music import Score
     app = QApplication(sys.argv)
     score = Score()
@@ -179,3 +180,4 @@ if __name__ == '__main__':
     window = ScoreWindow(score)
     window.show()
     app.exec_()
+    print export.score_to_mma(score)
