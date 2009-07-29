@@ -1,6 +1,6 @@
 from __future__ import with_statement
 from PyQt4.QtCore import QString, Qt, SIGNAL, SLOT
-from PyQt4.QtGui import QTabWidget, QMainWindow, QAction, QFileDialog, QApplication
+from PyQt4.QtGui import QTabWidget, QMainWindow, QAction, QFileDialog, QApplication, QKeySequence
 from scorewindow import ScoreWindow
 from chordscorewindow import ScoreWindow as ChordScoreWindow
 from speeddialwindow import SpeedDialWindow
@@ -30,21 +30,22 @@ class MainWindow(QMainWindow):
 
     def create_actions(self):
         new_tab_action = QAction('&New Tab', self)
-        new_tab_action.setShortcut('Ctrl+T')
+        new_tab_action.setShortcuts(QKeySequence.AddTab)
         self.connect(new_tab_action, SIGNAL('triggered()'), self.new_tab)
         self.new_tab_action = new_tab_action
 
         close_tab_action = QAction('&Close Tab', self)
-        close_tab_action.setShortcut('Ctrl+W')
+        close_tab_action.setShortcuts(QKeySequence.Close)
         self.connect(close_tab_action, SIGNAL('triggered()'), self.close_tab)
         self.close_tab_action = close_tab_action
 
         open_action = QAction('&Open...', self)
-        open_action.setShortcut('Ctrl+O')
+        open_action.setShortcuts(QKeySequence.Open)
         self.connect(open_action, SIGNAL('triggered()'), self.open_file)
         self.open_action = open_action
 
         save_as_action = QAction('Save &As...', self)
+        save_as_action.setShortcuts(QKeySequence.SaveAs)
         self.connect(save_as_action, SIGNAL('triggered()'), self.save_as_file)
         self.save_as_action = save_as_action
 
