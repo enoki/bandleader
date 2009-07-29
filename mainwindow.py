@@ -6,6 +6,7 @@ from chordscorewindow import ScoreWindow as ChordScoreWindow
 from speeddialwindow import SpeedDialWindow
 import export
 import cPickle as pickle
+import sys
 
 class ScoreTabs(QTabWidget):
     def __init__(self, score, *args):
@@ -54,6 +55,28 @@ class MainWindow(QMainWindow):
         self.connect(exit_action, SIGNAL('triggered()'),
                      self, SLOT('close()'))
         self.exit_action = exit_action
+
+        next_tab_action = QAction('Next Tab', self)
+        bindings = QKeySequence.keyBindings(QKeySequence.NextChild)
+        if sys.platform == 'darwin':
+            bindings.append('Meta+PgDown')
+            bindings.append('Meta+Tab')
+        else:
+            bindings.append('Ctrl+PgDown')
+        next_tab_action.setShortcuts(bindings)
+        self.connect(next_tab_action, SIGNAL('triggered()'), self.focus_next_tab);
+        self.addAction(next_tab_action)
+
+        previous_tab_action = QAction('Previous Tab', self)
+        bindings = QKeySequence.keyBindings(QKeySequence.PreviousChild)
+        if sys.platform == 'darwin':
+            bindings.append('Meta+PgUp')
+            bindings.append('Meta+Shift+Tab')
+        else:
+            bindings.append('Ctrl+PgUp')
+        previous_tab_action.setShortcuts(bindings)
+        self.connect(previous_tab_action, SIGNAL('triggered()'), self.focus_previous_tab);
+        self.addAction(previous_tab_action)
 
     def create_menus(self):
         filemenu = self.menuBar().addMenu('&File')
@@ -133,6 +156,18 @@ class MainWindow(QMainWindow):
         do_save(filename, self.score)
         self.setWindowFilePath(filename)
         self.setWindowModified(False)
+
+    def focus_next_tab(self):
+        index = self.tabs.currentIndex() + 1
+        if index >= self.tabs.count():
+            index = 0
+        self.tabs.setCurrentIndex(index)
+
+    def focus_previous_tab(self):
+        index = self.tabs.currentIndex() - 1
+        if index < 0:
+            index = self.tabs.count() - 1
+        self.tabs.setCurrentIndex(index)
 
 if __name__ == '__main__':
     from PyQt4.QtGui import QApplication
